@@ -1,0 +1,15 @@
+#!/usr/bin/ruby
+# encoding: utf-8
+
+require "test/unit"
+require_relative "../src/git-status-tree"
+
+require_relative 'node/test_node_class'
+require_relative 'node/test_node_attributes'
+require_relative 'node/test_node_instance'
+require_relative 'node/test_node_children_error'
+require_relative 'node/test_node_create_from_string'
+require_relative 'node/test_node_name_error'
+
+require_relative 'nodes_collection/test_nodes_collection_class'
+require_relative 'nodes_collection/test_nodes_collection_instance'
