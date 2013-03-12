@@ -3,17 +3,6 @@
 
 require_relative '../src/git-status-tree'
 
-# GIT STATUS
-#   ' '  unmodified
-#   'M'  modified
-#   'A'  added
-#   'D'  deleted
-#   'R'  renamed
-#   'C'  copied
-#   'U'  updated but unmerged
-#   '??' new
-
-
 files = (`git status --porcelain`).split(/\n/)
 nodes = files.map{|file| Node.create_from_string file}
 tree = nodes.reduce{|a, i| (a+i).nodes[0]}
@@ -22,4 +11,3 @@ if tree.nil?
 else
   puts tree.to_tree_s
 end
-
