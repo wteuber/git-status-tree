@@ -1,0 +1,5 @@
+#sh
+
+git config --global alias.tree '!sh -c "'`pwd`'/bin/git-status-tree"'
+echo 'git-status-tree successfully installed.'
+echo 'You can now use "git tree".'

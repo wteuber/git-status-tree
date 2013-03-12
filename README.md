@@ -33,23 +33,35 @@ recursively lists directories and files like that:
     ├── README.md
     └── VERSION
 
-The git-status-tree command ([https://github.com/knugie/git-status-tree])
-also prints this tree, containing only the the files listed by git-status.
-The output is colored. In order to use git-status-tree you need to install
-Ruby ([http://www.ruby-lang.org]) and of course Git is needed as well.
+The git tree command ([https://github.com/knugie/git-status-tree])
+also prints this kind of a tree, containing only the the files listed
+by git-status. The output is colored. In order to use git-status-tree
+you need to install Ruby ([http://www.ruby-lang.org]) and of course
+Git is needed as well.
 
-Try it!
+Install
 ------
     $ git clone https://github.com/knugie/git-status-tree.git
     $ cd git-status-tree
+    $ ./bin/install
+
+Uninstall
+------
+    $ cd git-status-tree
+    $ ./bin/uninstall
+
+Try it!
+------
+    $ echo "I need to install Ruby."
+    $ git clone https://github.com/knugie/git-status-tree.git
+    $ cd git-status-tree
+    $ ./bin/install
     $ echo "modified" >> README.md
     $ echo "added" > test/TODO.txt
-    $ rm VERSION
-    $ echo "I need to install Ruby."
-    $ ruby ./bin/git-status-tree
+    $ rm DELETEME.txt
+    $ git tree
     .
     ├── test
     │   └── TODO.txt (?)
-    ├── README.md (M)
-    └── VERSION (D)
-
+    ├── DELETEME.txt (D)
+    └── README.md (M)
