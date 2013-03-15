@@ -1,4 +1,4 @@
-#sh
+#!/bin/bash
 
 git config --global --unset alias.tree
 echo 'git-status-tree successfully uninstalled.'
