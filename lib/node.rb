@@ -5,6 +5,10 @@ class NodeChildrenError < StandardError; end
 class NodeTypeError < StandardError; end
 
 class Node
+  class << self
+    attr_accessor :indent
+  end
+
   attr_accessor :status, :name, :children
 
   def initialize(name, children = nil, status = nil)
@@ -96,16 +100,18 @@ class Node
       elsif depth > 0
         pre_ary = Array.new(depth).fill('    ')
 
+        indent = self.class.indent - 2
         open_parents.each do |idx|
-          pre_ary[idx] = '│   ' if pre_ary[idx] == '    '
+          pre_ary[idx] = '│' + (' ' * indent) + ' ' if pre_ary[idx] == '    '
         end
 
         if last
-          pre_ary[-1] = '└── '
+          pre_ary[-1] = '└' 
           open_parents.delete(depth-1)
         else
-          pre_ary[-1] = '├── '
+          pre_ary[-1] = '├'
         end
+        pre_ary[-1] += ('─' * indent) + ' '
 
 
         pre_ary * ''

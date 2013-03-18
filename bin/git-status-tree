@@ -3,11 +3,4 @@
 
 require_relative '../src/git-status-tree'
 
-files = (`git status --porcelain`).split(/\n/)
-nodes = files.map{|file| Node.create_from_string file}
-tree = nodes.reduce{|a, i| (a+i).nodes[0]}
-if tree.nil?
-  puts '(working directory clean)'
-else
-  puts tree.to_tree_s
-end
+puts GitStatusTree.new.to_s
