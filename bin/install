@@ -4,6 +4,7 @@ pushd `dirname $0` > /dev/null
 BIN_DIR=`pwd`
 popd > /dev/null
 
+git config --global status-tree.indent 4
 git config --global alias.tree "!sh -c \"$BIN_DIR/git-status-tree\""
 echo 'git-status-tree successfully installed.'
 echo 'You can now use "git tree".'

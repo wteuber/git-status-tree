@@ -7,12 +7,15 @@ recursively lists directories and files like that:
     $ tree --dirsfirst
     .
     ├── bin
-    │   └── git-status-tree
+    │   ├── git-status-tree
+    │   ├── install
+    │   └── uninstall
     ├── lib
     │   ├── bash_color.rb
     │   ├── node.rb
     │   └── nodes_collection.rb
     ├── src
+    │   ├── git_status_tree.rb
     │   └── git-status-tree.rb
     ├── test
     │   ├── node
@@ -44,6 +47,13 @@ Install
     $ git clone https://github.com/knugie/git-status-tree.git
     $ cd git-status-tree
     $ ./bin/install
+
+Config
+------
+Set the indentation as you like, default is 4.
+
+    $ git config --global status-tree.indent <indent>
+
 
 Uninstall
 ------

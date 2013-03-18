@@ -3,6 +3,7 @@
 require_relative '../lib/node'
 require_relative '../lib/nodes_collection'
 require_relative '../lib/bash_color'
+require_relative '../src/git_status_tree'
 
 # GIT STATUS
 #   ' '  unmodified
