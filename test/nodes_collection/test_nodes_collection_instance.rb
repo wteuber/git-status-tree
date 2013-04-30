@@ -1,12 +1,9 @@
 # encoding: utf-8
 
 class TestNodesCollectionInstance < Test::Unit::TestCase
-  def test_defined
-    assert_equal("constant" , defined?(NodesCollection))
-  end
 
-  def test_class
-    assert(NodesCollection.is_a?(Class))
+  def test_new?
+    assert(NodesCollection.respond_to?(:new))
   end
 
   def test_initialize_no_error

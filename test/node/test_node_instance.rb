@@ -46,13 +46,13 @@ class TestNodeInstance < Test::Unit::TestCase
     assert_equal({'test' => []}, Node.new('test', NodesCollection.new).to_primitive)
   end
 
-  def test_add_equal_files
+  def test_add_equal_files_class
     a = Node.create_from_string '   x'
     b = Node.create_from_string '   x'
     assert_equal(NodesCollection, (a + b).class)
   end
 
-  def test_add_equal_files
+  def test_add_equal_files_structure
     a = Node.create_from_string '   x'
     b = Node.create_from_string '   x'
     assert_equal([{"."=>["x"]}], (a + b).to_primitive)
@@ -61,31 +61,31 @@ class TestNodeInstance < Test::Unit::TestCase
   def test_add_different_files
     a = Node.create_from_string '   x'
     b = Node.create_from_string '   y'
-    assert_equal([{"."=>["x", "y"]}], (a + b).to_primitive)
+    assert_equal([{"." => ["x", "y"]}], (a + b).to_primitive)
   end
 
   def test_add_different_files_sort
     a = Node.create_from_string '   x'
     b = Node.create_from_string '   y'
-    assert_equal([{"."=>["x", "y"]}], (b + a).to_primitive)
+    assert_equal([{"." => ["x", "y"]}], (b + a).to_primitive)
   end
 
   def test_add_file_and_dir
     a = Node.create_from_string '   x'
     b = Node.create_from_string '   y/z'
-    assert_equal([{"."=>[{"y"=>["z"]}, "x"]}], (a + b).to_primitive)
+    assert_equal([{"." => [{"y"=>["z"]}, "x"]}], (a + b).to_primitive)
   end
 
   def test_add_dir_and_file
     a = Node.create_from_string '   y/z'
     b = Node.create_from_string '   x'
-    assert_equal([{"."=>[{"y"=>["z"]}, "x"]}], (a + b).to_primitive)
+    assert_equal([{"." => [{"y"=>["z"]}, "x"]}], (a + b).to_primitive)
   end
 
   def test_add_equal_dirs
     a = Node.create_from_string '   x/y'
     b = Node.create_from_string '   x/y'
-    assert_equal([{"."=>[{"x"=>["y"]}]}], (b + a).to_primitive)
+    assert_equal([{"." => [{"x" => ["y"]}]}], (b + a).to_primitive)
   end
 
   def test_plain_file_to_tree_s
@@ -109,6 +109,6 @@ class TestNodeInstance < Test::Unit::TestCase
     a = Node.create_from_string '   ./x/y'
     b = Node.create_from_string '   ./z'
     node = (a + b).nodes.first
-    assert_equal("\e[1;34m.\e[0m\n└── \e[1;34m.\e[0m\n    ├── \e[1;34mx\e[0m\n    │   └── y ()\e[0m\n    └── z ()\e[0m\n", node.to_tree_s)
+    assert_equal("\e[1;34m.\e[0m\n└── \e[1;34m.\e[0m\n    ├── \e[1;34mx\e[0m\n    │   └── y ()\e[0m\n    └── z ()\e[0m\n", node.to_tree_s)
   end
 end
