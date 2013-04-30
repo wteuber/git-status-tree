@@ -12,11 +12,13 @@ class Node
   attr_accessor :status, :name, :children
 
   def initialize(name, children = nil, status = nil)
+    self.class.indent ||= 4
     raise NodeNameError, '"name" must be a String.' unless name.is_a? String
     name = name.force_encoding('US-ASCII')
     raise NodeNameError, '"name" must have at least one character.' if name.empty?
     raise NodeNameError, '"name" must not contain "/", use create_from_string.' if name =~ /\//
     raise NodeChildrenError, '"children" must be a NodesCollection or nil.' unless children.nil? || children.is_a?(NodesCollection)
+
     @name = name
     @children = children
     @status = status || []

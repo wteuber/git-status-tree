@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 class TestNodeClass < Test::Unit::TestCase
+
   def test_defined
     assert_equal("constant" , defined?(Node))
   end
