@@ -90,25 +90,61 @@ class TestNodeInstance < Test::Unit::TestCase
 
   def test_plain_file_to_tree_s
     a = Node.create_from_string '   x'
-    assert_equal("\e[1;34m.\e[0m\n└── x ()\e[0m\n", a.to_tree_s)
+    assert_equal("\e[1;34m.\e[0m\n└── \e[0;32mx ( +)\e[0m\n", a.to_tree_s)
   end
 
   def test_dir_with_child_to_tree_s
     a = Node.create_from_string '   x/y'
-    assert_equal("\e[1;34m.\e[0m\n└── \e[1;34mx\e[0m\n    └── y ()\e[0m\n", a.to_tree_s)
+    assert_equal("\e[1;34m.\e[0m\n└── \e[1;34mx\e[0m\n    └── \e[0;32my ( +)\e[0m\n", a.to_tree_s)
   end
 
   def test_dir_with_children_to_tree_s
     a = Node.create_from_string '   ./x'
     b = Node.create_from_string '   ./y'
     node = (a + b).nodes.first
-    assert_equal("\e[1;34m.\e[0m\n└── \e[1;34m.\e[0m\n    ├── x ()\e[0m\n    └── y ()\e[0m\n", node.to_tree_s)
+    assert_equal("\e[1;34m.\e[0m\n└── \e[1;34m.\e[0m\n    ├── \e[0;32mx ( +)\e[0m\n    └── \e[0;32my ( +)\e[0m\n", node.to_tree_s)
   end
 
   def test_dir_with_children_and_file_to_tree_s
     a = Node.create_from_string '   ./x/y'
     b = Node.create_from_string '   ./z'
     node = (a + b).nodes.first
-    assert_equal("\e[1;34m.\e[0m\n└── \e[1;34m.\e[0m\n    ├── \e[1;34mx\e[0m\n    │   └── y ()\e[0m\n    └── z ()\e[0m\n", node.to_tree_s)
+    assert_equal("\e[1;34m.\e[0m\n└── \e[1;34m.\e[0m\n    ├── \e[1;34mx\e[0m\n    │   └── \e[0;32my ( +)\e[0m\n    └── \e[0;32mz ( +)\e[0m\n", node.to_tree_s)
   end
+
+  def test_status_untracked
+    a = Node.create_from_string '?? x'
+    assert_equal("\e[1;34m.\e[0m\n└── \e[0;31mx (?)\e[0m\n", a.to_tree_s)
+  end
+
+  def test_status_added_unstaged
+    a = Node.create_from_string ' A x'
+    assert_equal("\e[1;34m.\e[0m\n└── \e[0;31mx (A)\e[0m\n", a.to_tree_s)
+  end
+
+  def test_status_added_staged
+    a = Node.create_from_string 'A  x'
+    assert_equal("\e[1;34m.\e[0m\n└── \e[0;32mx (A+)\e[0m\n", a.to_tree_s)
+  end
+
+  def test_status_modified_unstaged
+    a = Node.create_from_string ' M x'
+    assert_equal("\e[1;34m.\e[0m\n└── \e[0;31mx (M)\e[0m\n", a.to_tree_s)
+  end
+
+  def test_status_modified_staged
+    a = Node.create_from_string 'M  x'
+    assert_equal("\e[1;34m.\e[0m\n└── \e[0;32mx (M+)\e[0m\n", a.to_tree_s)
+  end
+
+  def test_status_deleted_unstaged
+    a = Node.create_from_string ' D x'
+    assert_equal("\e[1;34m.\e[0m\n└── \e[0;31mx (D)\e[0m\n", a.to_tree_s)
+  end
+
+  def test_status_deleted_staged
+    a = Node.create_from_string 'D  x'
+    assert_equal("\e[1;34m.\e[0m\n└── \e[0;32mx (D+)\e[0m\n", a.to_tree_s)
+  end
+
 end
