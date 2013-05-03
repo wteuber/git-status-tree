@@ -27,8 +27,11 @@ class Node
   def self.create_from_string(gs_porcelain)
     raise NodeTypeError, '"str_node" must be String.' unless gs_porcelain.is_a? String
     raise NodeNameError, '"str_node" too short.' if gs_porcelain.length < 4
-
-    status = gs_porcelain[0..2].scan(/([^ ])/).flatten.uniq
+    status = if gs_porcelain[1] == ' '
+               gs_porcelain[0] + '+'
+             else
+               gs_porcelain[1]
+             end
     path = './' + gs_porcelain[3..-1]
     ary_nodes = path.split(/\//)
     name = ary_nodes.shift
@@ -76,6 +79,7 @@ class Node
         elsif !self.children.nil? && other.children.nil?
           NodesCollection.new([self.class.new(self.name, self.children)])
         elsif self.children.nil? && !other.children.nil?
+
           NodesCollection.new([self.class.new(self.name, other.children)])
         else
           NodesCollection.new([self.class.new(self.name, self.children + other.children)])
@@ -108,7 +112,7 @@ class Node
         end
 
         if last
-          pre_ary[-1] = '└' 
+          pre_ary[-1] = '└'
           open_parents.delete(depth-1)
         else
           pre_ary[-1] = '├'
@@ -123,18 +127,12 @@ class Node
     if dir?
       color_name += BashColor::EMB + name
     else #file?
-      if deleted?
-        color_name += BashColor::R
-      elsif added?
+      if staged?
         color_name += BashColor::G
-      elsif modified?
-        color_name += BashColor::Y
-      elsif unmerged?
-        color_name += BashColor::M
-      elsif new?
-        color_name += BashColor::EMW
+      else
+        color_name += BashColor::R
       end
-      color_name += name + ' (' + status * ''+')'
+      color_name += name + ' (' + status + ')'
     end
     color_name +=  BashColor::NONE
 
@@ -175,9 +173,14 @@ class Node
     self.status.include?('U')
   end
 
-  #   '??' new
+  #   '?' new
   def new?
     self.status.include?('?')
+  end
+
+  #   '+' staged
+  def staged?
+    self.status.include?('+')
   end
 
   private
