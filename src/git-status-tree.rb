@@ -1,9 +1,9 @@
 # encoding: utf-8
 
-require_relative '../lib/node'
-require_relative '../lib/nodes_collection'
-require_relative '../lib/bash_color'
-require_relative '../src/git_status_tree'
+require File.join File.dirname(__FILE__), '../lib/node'
+require File.join File.dirname(__FILE__), '../lib/nodes_collection'
+require File.join File.dirname(__FILE__), '../lib/bash_color'
+require File.join File.dirname(__FILE__), '../src/git_status_tree'
 
 # GIT STATUS
 #   ' '  unmodified
