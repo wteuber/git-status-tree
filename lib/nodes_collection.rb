@@ -73,8 +73,8 @@ class NodesCollection
       files_collection = self.class.new(all_nodes.select(&:file?))
     end
 
-    plain_dirs = all_dirs.select{|_,nodes| nodes.length == 1}.values.flatten(1) || []
-    merge_dirs = all_dirs.select{|_,nodes| nodes.length == 2}.map{|name,nodes| (nodes[0] + nodes[1]).nodes[0]} || []
+    plain_dirs = Hash[all_dirs.select{|_,nodes| nodes.length == 1}].values.flatten(1) || []
+    merge_dirs = Hash[all_dirs.select{|_,nodes| nodes.length == 2}].map{|name,nodes| (nodes[0] + nodes[1]).nodes[0]} || []
     dirs_collection = self.class.new(plain_dirs + merge_dirs)
     dir_nodes = dirs_collection.sort!
 
