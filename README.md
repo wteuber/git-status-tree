@@ -1,12 +1,15 @@
-[![Build Status](https://travis-ci.org/knugie/git-status-tree.png?branch=master)](https://travis-ci.org/knugie/git-status-tree)
+[![Build Status]
+(https://travis-ci.org/knugie/git-status-tree.png?branch=master)]
+(https://travis-ci.org/knugie/git-status-tree)
 
 git-status-tree
 =============================================
 
-The tree command (http://mama.indstate.edu/users/ice/tree)
-recursively lists directories and files like that:
+git-status-tree (https://github.com/knugie/git-status-tree) is a command line
+tool that helps you keeping track of changes in your git repository. Similar to
+the tree command (http://mama.indstate.edu/users/ice/tree), git-status-tree
+recursively lists directories and files like this:
 
-    $ tree --dirsfirst
     .
     ├── bin
     │   ├── git-status-tree
@@ -35,14 +38,24 @@ recursively lists directories and files like that:
     ├── GPL-LICENSE
     ├── LICENSE
     ├── MIT-LICENSE
+    ├── Rakefile
     ├── README.md
     └── VERSION
 
-The git tree command (https://github.com/knugie/git-status-tree)
-also prints this kind of a tree, containing only the the files listed
-by git-status. The output is colored. In order to use git-status-tree
-you need to install Ruby (http://www.ruby-lang.org) and of course
-Git is needed as well.
+Run "git tree" in the command line to list the files in your git repository you
+added, modified or deleted. The colored output indicates whether files have been
+staged (green) or not (red). In addition the current status of each file is
+appended to the list. git-status-tree requires git 1.8+ (http://git-scm.com)
+and ruby 1.8+ (http://www.ruby-lang.org).
+
+Sample
+------
+    $ git tree
+    .
+    ├── test
+    │   └── TODO.txt (?)
+    ├── DELETEME.txt (D)
+    └── README.md (M)
 
 Install
 ------
@@ -62,9 +75,8 @@ Uninstall
     $ cd git-status-tree
     $ ./bin/uninstall
 
-Try it!
+Try it
 ------
-    $ echo "I need to install Ruby."
     $ git clone https://github.com/knugie/git-status-tree.git
     $ cd git-status-tree
     $ ./bin/install
