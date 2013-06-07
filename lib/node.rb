@@ -14,7 +14,6 @@ class Node
   def initialize(name, children = nil, status = nil)
     self.class.indent ||= 4
     raise NodeNameError, '"name" must be a String.' unless name.is_a? String
-    name = name.force_encoding('US-ASCII')
     raise NodeNameError, '"name" must have at least one character.' if name.empty?
     raise NodeNameError, '"name" must not contain "/", use create_from_string.' if name =~ /\//
     raise NodeChildrenError, '"children" must be a NodesCollection or nil.' unless children.nil? || children.is_a?(NodesCollection)
@@ -27,10 +26,10 @@ class Node
   def self.create_from_string(gs_porcelain)
     raise NodeTypeError, '"str_node" must be String.' unless gs_porcelain.is_a? String
     raise NodeNameError, '"str_node" too short.' if gs_porcelain.length < 4
-    status = if gs_porcelain[1] == ' '
-               gs_porcelain[0] + '+'
+    status = if gs_porcelain[1..1] == ' '
+               gs_porcelain[0..0] + '+'
              else
-               gs_porcelain[1]
+               gs_porcelain[1..1]
              end
     path = './' + gs_porcelain[3..-1]
     ary_nodes = path.split(/\//)
@@ -188,7 +187,7 @@ class Node
   def name_valid?
     name &&
       name.is_a?(String) &&
-      name.encoding.to_s.eql?("US-ASCII") &&
+      (name.length > 0) &&
       name.match(/\//).nil?
   end
 
