@@ -4,6 +4,7 @@ class NodeNameError < StandardError; end
 class NodeChildrenError < StandardError; end
 class NodeTypeError < StandardError; end
 
+# A Node represents a file or directory in the git-status-tree
 class Node
   class << self
     attr_accessor :indent
@@ -13,10 +14,15 @@ class Node
 
   def initialize(name, children = nil, status = nil)
     self.class.indent ||= 4
-    raise NodeNameError, '"name" must be a String.' unless name.is_a? String
-    raise NodeNameError, '"name" must have at least one character.' if name.empty?
-    raise NodeNameError, '"name" must not contain "/", use create_from_string.' if name =~ /\//
-    raise NodeChildrenError, '"children" must be a NodesCollection or nil.' unless children.nil? || children.is_a?(NodesCollection)
+    msg = '"name" must be a String.'
+    raise NodeNameError, msg unless name.is_a? String
+    msg = '"name" must have at least one character.'
+    raise NodeNameError, msg if name.empty?
+    msg = '"name" must not contain "/", use create_from_string.'
+    raise NodeNameError, msg if name =~ /\//
+    msg = '"children" must be a NodesCollection or nil.'
+    valid_nodes_collection = children.nil? || children.is_a?(NodesCollection)
+    raise NodeChildrenError, msg unless valid_nodes_collection
 
     @name = name
     @children = children
@@ -24,7 +30,8 @@ class Node
   end
 
   def self.create_from_string(gs_porcelain)
-    raise NodeTypeError, '"str_node" must be String.' unless gs_porcelain.is_a? String
+    msg = '"str_node" must be String.'
+    raise NodeTypeError, msg unless gs_porcelain.is_a? String
     raise NodeNameError, '"str_node" too short.' if gs_porcelain.length < 4
     status = if gs_porcelain[1..1] == ' '
                gs_porcelain[0..0] + '+'
@@ -43,6 +50,10 @@ class Node
     end
 
     node
+  end
+
+  def self.instances?
+    lambda { |node| node.is_a?(Node) }
   end
 
   def to_primitive
@@ -72,26 +83,13 @@ class Node
     raise 'not valid' unless self.valid? && other.valid?
     raise 'not a ' + self.class.to_s unless other.is_a?(self.class)
 
-    result = (if self.name == other.name
-        if self.children.nil? && other.children.nil?
-          NodesCollection.new([self.class.new(self.name)])
-        elsif !self.children.nil? && other.children.nil?
-          NodesCollection.new([self.class.new(self.name, self.children)])
-        elsif self.children.nil? && !other.children.nil?
+    tmp_children = [self.children, other.children].compact.inject(&:+)
 
-          NodesCollection.new([self.class.new(self.name, other.children)])
-        else
-          NodesCollection.new([self.class.new(self.name, self.children + other.children)])
-        end
-      else
-        NodesCollection.new([self, other].sort!)
-      end)
-
-    result
+    NodesCollection.new([self.class.new(self.name, tmp_children)])
   end
 
   def <=>(other)
-    return (self.name <=> other.name) if (self.file? && other.file?) || (self.dir? && other.dir?)
+    return (self.name <=> other.name) if self.file? == other.file?
     return -1 if (self.dir? && other.file?)
     return 1 if (self.file? && other.dir?)
     0
@@ -100,27 +98,7 @@ class Node
   def to_tree_s(depth = 0, open_parents = [0], last = true)
     open_parents << depth
 
-    pre = (if depth == 0
-        ''
-      elsif depth > 0
-        pre_ary = Array.new(depth).fill('    ')
-
-        indent = self.class.indent - 2
-        open_parents.each do |idx|
-          pre_ary[idx] = '│' + (' ' * indent) + ' ' if pre_ary[idx] == '    '
-        end
-
-        if last
-          pre_ary[-1] = '└'
-          open_parents.delete(depth-1)
-        else
-          pre_ary[-1] = '├'
-        end
-        pre_ary[-1] += ('─' * indent) + ' '
-
-
-        pre_ary * ''
-      end)
+    pre = pre_tree(depth, open_parents, last)
 
     color_name = ''
     if dir?
@@ -202,5 +180,29 @@ class Node
   def valid_file?
     name_valid? &&
       children.nil?
+  end
+
+  def pre_tree(depth, open_parents, last)
+    if depth == 0
+      ''
+    elsif depth > 0
+      pre_ary = Array.new(depth).fill('    ')
+
+      indent = self.class.indent - 2
+      open_parents.each do |idx|
+        pre_ary[idx] = '│' + (' ' * indent) + ' ' if pre_ary[idx] == '    '
+      end
+
+      if last
+        pre_ary[-1] = '└'
+        open_parents.delete(depth-1)
+      else
+        pre_ary[-1] = '├'
+      end
+      pre_ary[-1] += ('─' * indent) + ' '
+
+
+      pre_ary * ''
+    end
   end
 end

@@ -1,6 +1,8 @@
+# GitStatusTree
+# use GitStatusTree.new.to_s to print the current git-status-tree
 class GitStatusTree
   attr_reader :files, :nodes, :tree
-  
+
   def initialize(options = {})
     config = %x(git config --global status-tree.indent).strip
     config = (config =~ /\A\d+\z/) ? config.to_i : nil
@@ -12,7 +14,7 @@ class GitStatusTree
     @nodes = files.map{|file| Node.create_from_string file}
     @tree = nodes.reduce{|a, i| (a+i).nodes[0]}
   end
-  
+
   def to_s
     if tree.nil?
       '(working directory clean)'
