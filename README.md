@@ -23,6 +23,8 @@ recursively lists directories and files like this:
     │   ├── git_status_tree.rb
     │   └── git-status-tree.rb
     ├── test
+    │   ├── code_quality
+    │   │   └── cane.rb
     │   ├── node
     │   │   ├── test_node_attributes.rb
     │   │   ├── test_node_children_error.rb
@@ -35,10 +37,11 @@ recursively lists directories and files like this:
     │   │   └── test_nodes_collection_instance.rb
     │   └── test_git-status-tree
     ├── DELETEME.txt
+    ├── Gemfile
+    ├── Gemfile.lock
     ├── GPL-LICENSE
     ├── LICENSE
     ├── MIT-LICENSE
-    ├── Rakefile
     ├── README.md
     └── VERSION
 
