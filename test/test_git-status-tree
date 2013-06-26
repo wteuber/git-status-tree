@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 require 'test/unit'
+require File.join File.dirname(__FILE__), 'code_quality/cane'
 require File.join File.dirname(__FILE__), '../src/git-status-tree'
 
 require File.join File.dirname(__FILE__), 'node/test_node_class'
