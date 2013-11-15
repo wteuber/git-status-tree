@@ -1,12 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    cane (2.6.0)
-      parallel
-    parallel (0.7.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  cane
