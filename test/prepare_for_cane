@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+gemfile = File.join '.', File.dirname(__FILE__), '..', 'Gemfile.lock'
+gemfile_cane =  gemfile + '_cane'
+gemfile_no_cane = gemfile + '_no_cane'
+
+
+File.rename gemfile, gemfile_cane
+
+if ENV['RUBY_VERSION'][0..9] >= 'ruby-1.9.0'
+  File.rename gemfile_cane, gemfile
+else
+  File.rename gemfile_no_cane, gemfile
+end
+

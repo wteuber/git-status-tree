@@ -1,3 +1,4 @@
+before_install: 'test/prepare_for_cane'
 script: 'test/test_git-status-tree'
 rvm:
   - 2.0.0
