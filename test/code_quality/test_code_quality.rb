@@ -4,7 +4,6 @@ class TestCodeQuality < Test::Unit::TestCase
 
   def test_cane
     if ENV['RUBY_VERSION'][0..9] >= 'ruby-1.9.0'
-      require 'bundler/setup'
       options = {
           '--abc-glob'      => '"{bin,lib,src,test}/**/*.rb"',
           '--abc-max'       => '15',
