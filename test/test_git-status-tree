@@ -2,15 +2,16 @@
 # encoding: utf-8
 
 require 'test/unit'
-require File.join File.dirname(__FILE__), 'code_quality/cane'
-require File.join File.dirname(__FILE__), '../src/git-status-tree'
 
-require File.join File.dirname(__FILE__), 'node/test_node_class'
-require File.join File.dirname(__FILE__), 'node/test_node_attributes'
-require File.join File.dirname(__FILE__), 'node/test_node_instance'
-require File.join File.dirname(__FILE__), 'node/test_node_children_error'
-require File.join File.dirname(__FILE__), 'node/test_node_create_from_string'
-require File.join File.dirname(__FILE__), 'node/test_node_name_error'
+require File.join '.', File.dirname(__FILE__), 'code_quality/test_code_quality'
+require File.join '.', File.dirname(__FILE__), '../src/git-status-tree'
 
-require File.join File.dirname(__FILE__), 'nodes_collection/test_nodes_collection_class'
-require File.join File.dirname(__FILE__), 'nodes_collection/test_nodes_collection_instance'
+require File.join '.', File.dirname(__FILE__), 'node/test_node_class'
+require File.join '.', File.dirname(__FILE__), 'node/test_node_attributes'
+require File.join '.', File.dirname(__FILE__), 'node/test_node_instance'
+require File.join '.', File.dirname(__FILE__), 'node/test_node_children_error'
+require File.join '.', File.dirname(__FILE__), 'node/test_node_create_from_string'
+require File.join '.', File.dirname(__FILE__), 'node/test_node_name_error'
+
+require File.join '.', File.dirname(__FILE__), 'nodes_collection/test_nodes_collection_class'
+require File.join '.', File.dirname(__FILE__), 'nodes_collection/test_nodes_collection_instance'
