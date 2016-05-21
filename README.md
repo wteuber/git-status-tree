@@ -1,6 +1,6 @@
 [![Build Status]
 (https://travis-ci.org/knugie/git-status-tree.png?branch=master)]
-(https://travis-ci.org/knugie/git-status-tree) <-- will pass after https://github.com/travis-ci/travis-ci/issues/5861 is resolved
+(https://travis-ci.org/knugie/git-status-tree)
 
 git-status-tree
 =============================================
