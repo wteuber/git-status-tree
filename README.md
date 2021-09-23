@@ -4,8 +4,8 @@
 
 git-status-tree (https://github.com/knugie/git-status-tree) is a command line tool  
 that helps you keeping track of changes in your git repository. Similar to the `tree`  
-command (https://github.com/nodakai/tree-command), git-status-tree recursively lists  
-directories and files. Run `git tree` in the command line to list all files in your  
+command (https://github.com/nodakai/tree-command), git-status-tree recursively  
+lists directories and files. Run `git tree` in the command line to list all files in your  
 git repository that have been added (A), modified (M) or deleted (D). The colored  
 output indicates whether a file has been staged (green)(+) or not (red). The current  
 status of each file is appended to it.
