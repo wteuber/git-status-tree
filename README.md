@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/knugie/git-status-tree.png?branch=master)](https://travis-ci.org/knugie/git-status-tree)
+[![Build Status](https://app.travis-ci.com/knugie/git-status-tree.svg?branch=master)](https://app.travis-ci.com/github/knugie/git-status-tree)
 
 # git-status-tree
 
