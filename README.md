@@ -19,9 +19,7 @@ of each file is appended to it.
 
 ## Install
 ```
-git clone https://github.com/knugie/git-status-tree.git
-cd git-status-tree
-./bin/install
+gem install git-status-tree
 ```
 
 ## Config
@@ -32,15 +30,12 @@ git config --global status-tree.indent <indent>
 
 ## Uninstall
 ```
-cd path/to/git-status-tree
-./bin/uninstall
+gem uninstall git-status-tree
 ```
 
 ## Try it
 ```
-git clone https://github.com/knugie/git-status-tree.git
-cd git-status-tree
-./bin/install
+gem install git-status-tree
 echo "change" >> README.md
 echo "add untracked" > test/untracked.txt
 rm DELETEME.txt
