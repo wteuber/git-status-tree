@@ -1,6 +1,0 @@
-#!/bin/bash
-
-git config --global --unset alias.tree
-git config --global --remove-section status-tree
-echo 'git-status-tree successfully uninstalled.'
-echo 'You can not use "git tree" anymore.'

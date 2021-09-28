@@ -1,0 +1,7 @@
+#!/bin/bash
+
+git config --global --unset alias.tree
+git config --global --remove-section status-tree
+echo '###############################'
+echo '# "git tree" has been removed #'
+echo '###############################'
