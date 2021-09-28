@@ -36,6 +36,8 @@ gem uninstall git-status-tree
 ## Try it
 ```
 gem install git-status-tree
+git clone https://github.com/knugie/git-status-tree.git
+cd git-status-tree
 echo "change" >> README.md
 echo "add untracked" > test/untracked.txt
 rm DELETEME.txt
