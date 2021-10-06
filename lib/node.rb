@@ -109,7 +109,9 @@ class Node
       else
         color_name += BashColor::R
       end
-      color_name += name + ' (' + status + ')'
+      # status will be empty if a file is deleted+staged, then added (showing
+      # as deleted + unstaged). show '??' in that case.
+      color_name += name + ' (' + (status.length() > 0 ? status : '??') + ')'
     end
     color_name +=  BashColor::NONE
 
