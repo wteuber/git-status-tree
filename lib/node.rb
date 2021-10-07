@@ -26,7 +26,7 @@ class Node
 
     @name = name
     @children = children
-    @status = status || []
+    @status = status || '??'
   end
 
   def self.create_from_string(gs_porcelain)
