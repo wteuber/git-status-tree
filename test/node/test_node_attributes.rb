@@ -6,6 +6,10 @@ class TestNodeAttributes < Test::Unit::TestCase
     assert_equal('file.txt', Node.new('file.txt').name)
   end
 
+  def test_node_status_default
+    assert_equal('??', Node.new('file.txt').status)
+  end
+
   def test_node_name_dir
     assert_equal('dir_name', Node.new('dir_name', NodesCollection.new).name)
   end

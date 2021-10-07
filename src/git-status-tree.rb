@@ -13,4 +13,4 @@ require File.join File.dirname(__FILE__), '../src/git_status_tree'
 #   'R'  renamed
 #   'C'  copied
 #   'U'  updated but unmerged
-#   '??' new
+#   '??' other
