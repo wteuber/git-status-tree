@@ -1,4 +1,5 @@
 [![Build Status](https://app.travis-ci.com/knugie/git-status-tree.svg?branch=master)](https://app.travis-ci.com/github/knugie/git-status-tree)
+[![Gem Version](https://img.shields.io/gem/v/git-status-tree.svg)](https://rubygems.org/gems/git-status-tree)
 
 # git-status-tree
 
