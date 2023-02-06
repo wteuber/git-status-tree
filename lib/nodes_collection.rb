@@ -1,18 +1,18 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 # error class for invalid NodeCollection types
-class NodesCollectionTypeError < StandardError;
+class NodesCollectionTypeError < StandardError
 end
 
 # collection of nodes
-class NodesCollection
+class NodesCollection # rubocop:disable Metrics/ClassLength
   attr_accessor :nodes
 
   def self.create_from_string(str_nodes, status = '   ')
     msg = '"str_nodes" must be String.'
     raise NodesCollectionTypeError, msg unless str_nodes.is_a? String
 
-    ary_nodes = str_nodes.split(/\//)
+    ary_nodes = str_nodes.split(%r{/})
     create_from_valid_array(ary_nodes, status)
   end
 
@@ -20,29 +20,20 @@ class NodesCollection
     ary_nodes = [ary_nodes].flatten(1)
 
     msg = '"ary_nodes" must only contain Strings.'
-    are_strings = lambda { |node| node.is_a?(String) }
-    raise NodesCollectionTypeError, msg unless ary_nodes.all? &are_strings
+    are_strings = ->(node) { node.is_a?(String) }
+    raise NodesCollectionTypeError, msg unless ary_nodes.all?(&are_strings)
 
     create_from_valid_array(ary_nodes, status)
   end
 
-  def self.new_from_nodes_array(nodes)
-    raise msg unless nodes.all? &Node.instances?
+  def self.new_from_nodes_array(all_nodes)
+    raise msg unless all_nodes.all?(&Node.instances?)
 
-    all_nodes = nodes.group_by(&:name)
+    grouped_nodes = all_nodes.group_by(&:name)
+    plain_nodes = plain_nodes(grouped_nodes)
+    merged_nodes = merged_nodes(grouped_nodes)
 
-    plain_nodes = []
-    all_nodes.each { |_, nodes| plain_nodes << nodes if nodes.length == 1 }
-    plain_nodes.flatten!(1)
-
-    merged_nodes = []
-    all_nodes.each do |_, nodes|
-      if nodes.length == 2
-        merged_nodes << (nodes[0] + nodes[1]).nodes[0]
-      end
-    end
-
-    self.new(plain_nodes + merged_nodes)
+    new(plain_nodes + merged_nodes)
   end
 
   def self.create_from_valid_array(ary_nodes, status)
@@ -53,62 +44,69 @@ class NodesCollection
            else
              Node.new(name, nil, status)
            end
-    self.new([node])
+    new([node])
   end
 
   private_class_method :create_from_valid_array
+
+  def self.merged_nodes(grouped_nodes)
+    merged_nodes = []
+    grouped_nodes.each do |_, nodes|
+      merged_nodes << (nodes[0] + nodes[1]).nodes[0] if nodes.length == 2
+    end
+    merged_nodes
+  end
+  private_class_method :merged_nodes
+
+  def self.plain_nodes(grouped_nodes)
+    grouped_nodes.filter { |_, nodes| nodes.length == 1 }.values.flatten(1)
+  end
+  private_class_method :plain_nodes
 
   def initialize(nodes = [])
     nodes = [nodes].flatten(1)
 
     msg = '"nodes" must only contain Nodes.'
-    are_nodes = lambda { |node| node.is_a?(Node) }
-    raise NodesCollectionTypeError, msg unless nodes.all? &are_nodes
+    are_nodes = ->(node) { node.is_a?(Node) }
+    raise NodesCollectionTypeError, msg unless nodes.all?(&are_nodes)
+
     @nodes = nodes
   end
 
   # @return [NodesCollection]
   def +(other)
-    unless other.is_a?(Node) || other.is_a?(self.class)
-      raise 'not a Node or NodesCollection'
-    end
+    raise 'not a Node or NodesCollection' unless other.is_a?(Node) || other.is_a?(self.class)
 
     all_nodes = merge_nodes_with other
-    all_dirs = all_nodes.select(&:dir?)
-    all_files = all_nodes.select(&:file?)
 
-    dirs_collection = self.class.new_from_nodes_array all_dirs
-    files_collection = self.class.new all_files
-
-
-    dir_nodes = dirs_collection.sort!
-    file_nodes = files_collection.sort!
+    dir_nodes = dir_nodes(all_nodes)
+    file_nodes = file_nodes(all_nodes)
 
     self.class.new(dir_nodes + file_nodes)
   end
 
   # @return [Integer]
   def <=>(other)
-    self.to_primitive <=> other.to_primitive
+    to_primitive <=> other.to_primitive
   end
 
   # @return [Array<Node>]
   def nodes_not_in(other)
-    self_names = self.nodes.map(&:name)
+    self_names = nodes.map(&:name)
     other_names = other.nodes.map(&:name)
 
     self_only_names = self_names - (self_names & other_names)
 
-    self.nodes.select { |node| self_only_names.include?(node.name) }
+    nodes.select { |node| self_only_names.include?(node.name) }
   end
 
   # @return [Array<Node>]
   def merge_common_nodes_with(other)
-    self_names = self.nodes.map(&:name)
+    self_names = nodes.map(&:name)
     other_names = other.nodes.map(&:name)
 
     common_names = self_names & other_names
-    all_nodes = self.nodes + other.nodes
+    all_nodes = nodes + other.nodes
 
     common_names.map do |name|
       all_nodes.select { |node| node.name == name }.reduce(&:+).nodes[0]
@@ -117,20 +115,11 @@ class NodesCollection
 
   # @return [Array<Node>]
   def merge_nodes_with(other)
-    if other.is_a? Node
-      if self.nodes.map(&:name).include?(other.name)
-        equal_names = lambda { |node| node.name == other.name }
-        collection_merged = self.nodes.select(&equal_names)[0] + other
-        other = collection_merged.nodes[0]
-      end
-
-      nodes_merged = self.nodes + [other]
-    elsif other.is_a? NodesCollection
-      self_dedicated_nodes = self.nodes_not_in other
-      other_dedicated_nodes = other.nodes_not_in self
-      common_nodes = self.merge_common_nodes_with other
-
-      nodes_merged = self_dedicated_nodes + common_nodes + other_dedicated_nodes
+    case other
+    when Node
+      nodes_merged = merge_nodes_with_node(other)
+    when NodesCollection
+      nodes_merged = merge_nodes_with_collection(other)
     end
 
     nodes_merged
@@ -153,27 +142,53 @@ class NodesCollection
   end
 
   def valid?
-    nodes &&
-        nodes.is_a?(Array) &&
-        nodes.all? { |node| node.is_a?(Node) } &&
-        nodes.all?(&:valid?)
-    #TODO compare uniqueness of file and dir names.
+    nodes.is_a?(Array) &&
+      nodes.all? { |node| node.is_a?(Node) } &&
+      nodes&.all?(&:valid?)
+    # TODO: compare uniqueness of file and dir names.
   end
 
   def to_tree_s(depth = 0, open_parents = [])
     tree_s = ''
 
     if nodes.length > 1
-      to_tree_s = lambda { |node| node.to_tree_s(depth, open_parents, false) }
-      tree_s << nodes[0..-2].map(&to_tree_s) * ''
+      to_tree_s = ->(node) { node.to_tree_s(depth, open_parents, last: false) }
+      tree_s += nodes[0..-2].map(&to_tree_s) * ''
     end
-    tree_s << nodes.last.to_tree_s(depth, open_parents)
+    tree_s += nodes.last.to_tree_s(depth, open_parents)
 
     tree_s
   end
 
-  private
-  def add_node(other)
+  def file_nodes(all_nodes)
+    all_files = all_nodes.select(&:file?)
+    files_collection = self.class.new all_files
+    files_collection.sort!
   end
 
+  def dir_nodes(all_nodes)
+    all_dirs = all_nodes.select(&:dir?)
+    dirs_collection = self.class.new_from_nodes_array all_dirs
+    dirs_collection.sort!
+  end
+
+  def merge_nodes_with_collection(other)
+    self_dedicated_nodes = nodes_not_in other
+    other_dedicated_nodes = other.nodes_not_in self
+    common_nodes = merge_common_nodes_with other
+
+    self_dedicated_nodes + common_nodes + other_dedicated_nodes
+  end
+
+  def merge_nodes_with_node(other)
+    if nodes.map(&:name).include?(other.name)
+      equal_names = ->(node) { node.name == other.name }
+      collection_merged = nodes.select(&equal_names)[0] + other
+      other = collection_merged.nodes[0]
+    end
+
+    nodes + [other]
+  end
+
+  def add_node(other); end
 end

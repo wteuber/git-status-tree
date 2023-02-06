@@ -7,35 +7,42 @@ jobs:
     steps:
       - checkout
       - run: 'bundle install'
-      - run: './test/test_git-status-tree'
+      - run: './test/test_git_status_tree'
   build_ruby_2_7:
     docker:
       - image: 'cimg/ruby:2.7'
     steps:
       - checkout
       - run: 'bundle install'
-      - run: './test/test_git-status-tree'
+      - run: './test/test_git_status_tree'
   build_ruby_3_0:
     docker:
       - image: 'cimg/ruby:3.0'
     steps:
       - checkout
       - run: 'bundle install'
-      - run: './test/test_git-status-tree'
+      - run: './test/test_git_status_tree'
   build_ruby_3_1:
     docker:
       - image: 'cimg/ruby:3.1'
     steps:
       - checkout
       - run: 'bundle install'
-      - run: './test/test_git-status-tree'
+      - run: './test/test_git_status_tree'
   build_ruby_3_2:
     docker:
       - image: 'cimg/ruby:3.2'
     steps:
       - checkout
       - run: 'bundle install'
-      - run: './test/test_git-status-tree'
+      - run: './test/test_git_status_tree'
+  build_rubocop:
+    docker:
+      - image: 'cimg/ruby:3.2'
+    steps:
+      - checkout
+      - run: 'bundle install'
+      - run: 'rubocop .'
 workflows:
   build_ruby_2_6:
     jobs:
@@ -52,3 +59,6 @@ workflows:
   build_ruby_3_2:
     jobs:
       - build_ruby_3_2
+  build_rubocop:
+    jobs:
+      - build_rubocop
