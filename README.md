@@ -12,16 +12,22 @@ shows whether a file has been added/staged (green)(+) or not (red). The current 
 of each file is appended to it.
 ___
 ## Installation
-**git-status-tree** is available on [rubygems.org](https://rubygems.org/gems/git-status-tree). Install git-status-tree running:
+git-status-tree is available on [rubygems.org](https://rubygems.org/gems/git-status-tree).
+Install git-status-tree by running:
 ```
 gem install git-status-tree
 ```
 
-## Example
+## Usage
+Start using git-status-tree in your terminal by running:
+```
+git tree
+```
+#### Example Output
 ![image](https://user-images.githubusercontent.com/1446195/134486179-290820c6-4a8c-4cf3-8707-43adacb77b4d.png)
 
 ## Compatibility
-**git-status-tree** supports:
+git-status-tree supports:
 * Git (http://git-scm.com): version 1.8+
 * Ruby (http://www.ruby-lang.org): version 2.7+
 
