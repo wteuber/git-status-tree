@@ -1,9 +1,8 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 class TestNodeClass < Test::Unit::TestCase
-
   def test_defined
-    assert_equal("constant" , defined?(Node))
+    assert_equal('constant', defined?(Node))
   end
 
   def test_class
@@ -11,11 +10,11 @@ class TestNodeClass < Test::Unit::TestCase
   end
 
   def test_initialize_argument_error
-    assert_raise(ArgumentError){Node.new}
+    assert_raise(ArgumentError) { Node.new }
   end
 
   def test_initialize_no_error
-    assert_nothing_raised(){Node.new('test')}
+    assert_nothing_raised { Node.new('test') }
   end
 
   def test_initialize

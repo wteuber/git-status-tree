@@ -1,7 +1,6 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 class TestNodeAttributes < Test::Unit::TestCase
-
   def test_node_name_file
     assert_equal('file.txt', Node.new('file.txt').name)
   end
