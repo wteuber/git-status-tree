@@ -1,4 +1,4 @@
-[![Build Status](https://app.travis-ci.com/knugie/git-status-tree.svg?branch=master)](https://app.travis-ci.com/github/knugie/git-status-tree)
+[![CircleCI Status](https://circleci.com/gh/knugie/git-status-tree/tree/master.svg?style=svg)](https://circleci.com/gh/knugie/git-status-tree/tree/master)
 [![Gem Version](https://img.shields.io/gem/v/git-status-tree.svg)](https://rubygems.org/gems/git-status-tree)
 
 # git-status-tree
@@ -10,28 +10,25 @@ and files. Run `git tree` in the command line to list all files in your git repo
 untracked (?) or have been added (A), modified (M) or deleted (D). The colored output  
 shows whether a file has been added/staged (green)(+) or not (red). The current status  
 of each file is appended to it.
-
-## Example
-![image](https://user-images.githubusercontent.com/1446195/134486179-290820c6-4a8c-4cf3-8707-43adacb77b4d.png)
-
-## Requirements
-* Git (http://git-scm.com): version 1.8+
-* Ruby (http://www.ruby-lang.org): version 1.8+
-
-## Install
+___
+## Installation
+**git-status-tree** is available on [rubygems.org](https://rubygems.org/gems/git-status-tree). Install git-status-tree running:
 ```
 gem install git-status-tree
 ```
 
-## Config
+## Example
+![image](https://user-images.githubusercontent.com/1446195/134486179-290820c6-4a8c-4cf3-8707-43adacb77b4d.png)
+
+## Compatibility
+**git-status-tree** supports:
+* Git (http://git-scm.com): version 1.8+
+* Ruby (http://www.ruby-lang.org): version 2.7+
+
+## Configuration
 Set the indentation as you like, default is 4.
 ```
 git config --global status-tree.indent <indent>
-```
-
-## Uninstall
-```
-gem uninstall git-status-tree
 ```
 
 ## Try it
@@ -58,3 +55,23 @@ git tree
 git reset HEAD --hard
 git clean -xdf
 ```
+
+## Uninstall
+```
+gem uninstall git-status-tree
+```
+___
+## Development
+
+1. Clone this repository
+   * `git clone https://github.com/knugie/git-status-tree.git`
+   * `cd git-status-tree`
+2. Install dependencies
+    * `bundle install`
+3. Run tests
+    * `./test/test_git_status_tree`
+4. Run git-status-tree from repository
+    * `./bin/git-status-tree`
+5. Build and install local gem
+   * `gem build git-status-tree.gemspec`
+   * `gem install git-status-tree-2.0.0.gem`
