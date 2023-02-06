@@ -1,5 +1,5 @@
 [![CircleCI Status](https://circleci.com/gh/knugie/git-status-tree/tree/master.svg?style=svg)](https://circleci.com/gh/knugie/git-status-tree/tree/master)
-[![Gem Version](https://img.shields.io/gem/v/git-status-tree.svg)](https://rubygems.org/gems/git-status-tree)
+[![Gem Version](https://badge.fury.io/rb/git-status-tree.svg)](https://badge.fury.io/rb/git-status-tree)
 
 # git-status-tree
 
