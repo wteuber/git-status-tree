@@ -1,9 +1,8 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 class TestNodesCollectionClass < Test::Unit::TestCase
-
   def test_defined?
-    assert_equal("constant" , defined?(NodesCollection))
+    assert_equal('constant', defined?(NodesCollection))
   end
 
   def test_class?
@@ -11,11 +10,11 @@ class TestNodesCollectionClass < Test::Unit::TestCase
   end
 
   def test_argument_error
-    assert_raise(NodesCollectionTypeError){NodesCollection.new(nil)}
+    assert_raise(NodesCollectionTypeError) { NodesCollection.new(nil) }
   end
 
   def test_initialize_no_error
-    assert_nothing_raised(){NodesCollection.new}
+    assert_nothing_raised { NodesCollection.new }
   end
 
   def test_initialize
