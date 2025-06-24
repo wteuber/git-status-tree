@@ -5,4 +5,5 @@ require 'bundler/setup' if ENV['RUBY_VERSION'][0..9] >= 'ruby-1.9.0'
 require 'test/unit'
 
 require File.join '.', File.dirname(__FILE__), '../src/git_status_tree'
+require File.join '.', File.dirname(__FILE__), '../lib/version'
 Dir[File.join(__dir__, '**/*.rb')].sort.each { |f| require f }

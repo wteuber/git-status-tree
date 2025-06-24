@@ -1,6 +1,30 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'optparse'
 require File.join File.dirname(__FILE__), '../src/git_status_tree'
+require File.join File.dirname(__FILE__), '../lib/version'
 
-puts GitStatusTree.new.to_s
+parser = OptionParser.new do |opts|
+  opts.banner = 'Usage: git-status-tree [options]'
+
+  opts.on('-v', '--version', 'Show version') do
+    puts "git-status-tree #{GitStatusTree::VERSION}"
+    exit 0
+  end
+
+  opts.on('-h', '--help', 'Show this help message') do
+    puts opts
+    exit 0
+  end
+end
+
+begin
+  parser.parse!
+rescue OptionParser::InvalidOption => e
+  puts "Error: #{e.message}"
+  puts parser
+  exit 1
+end
+
+puts GitStatusTree.new
