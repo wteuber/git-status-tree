@@ -1,1 +1,16 @@
-/Gemfile.lock
+# Build artifacts
+mkmf.log
+*.o
+*.so
+*.bundle
+
+# Temporary files
+*.swp
+*.swo
+*~
+.DS_Store
+
+# IDE files
+.idea/
+.vscode/
+*.iml
