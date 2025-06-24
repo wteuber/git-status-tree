@@ -83,7 +83,8 @@ ___
     * `bundle install`
 3. Run tests
     * `./test/test_git_status_tree`
-4. Run RuboCop for code linting
+    * Tests include RuboCop code style checks
+4. Run RuboCop separately (optional)
     * `bundle exec rubocop`
     * To auto-correct offenses: `bundle exec rubocop -a`
 5. Run git-status-tree from repository

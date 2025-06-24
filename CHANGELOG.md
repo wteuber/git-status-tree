@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- RuboCop code style checks integrated into test suite
+
 ## [3.0.0] - 2025-06-25
 
 ### Added
