@@ -76,8 +76,11 @@ ___
     * `bundle install`
 3. Run tests
     * `./test/test_git_status_tree`
-4. Run git-status-tree from repository
+4. Run RuboCop for code linting
+    * `bundle exec rubocop`
+    * To auto-correct offenses: `bundle exec rubocop -a`
+5. Run git-status-tree from repository
     * `./bin/git-status-tree`
-5. Build and install local gem
+6. Build and install local gem
    * `gem build git-status-tree.gemspec`
-   * `gem install git-status-tree-2.0.0.gem`
+   * `gem install git-status-tree-3.0.0.gem`
