@@ -51,7 +51,7 @@ class NodesCollection # rubocop:disable Metrics/ClassLength
 
   def self.merged_nodes(grouped_nodes)
     merged_nodes = []
-    grouped_nodes.each do |_, nodes|
+    grouped_nodes.each_value do |nodes|
       merged_nodes << (nodes[0] + nodes[1]).nodes[0] if nodes.length == 2
     end
     merged_nodes
