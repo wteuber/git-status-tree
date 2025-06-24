@@ -84,6 +84,9 @@ ___
 3. Run tests
     * `./test/test_git_status_tree`
     * Tests include RuboCop code style checks
+    * SimpleCov generates code coverage reports in `coverage/`
+    * Tests will fail if coverage drops
+    * To skip coverage: `COVERAGE=false ./test/test_git_status_tree`
 4. Run RuboCop separately (optional)
     * `bundle exec rubocop`
     * To auto-correct offenses: `bundle exec rubocop -a`

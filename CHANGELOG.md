@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - RuboCop code style checks integrated into test suite
+- SimpleCov code coverage analysis
+  - Coverage reports generated in `coverage/` directory
+  - Tests fail if coverage drops
+  - Can be disabled with `COVERAGE=false` environment variable
 
 ## [3.0.0] - 2025-06-25
 

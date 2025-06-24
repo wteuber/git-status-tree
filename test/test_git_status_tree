@@ -1,6 +1,12 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# Start SimpleCov before loading any application code
+if ENV['COVERAGE'] != 'false'
+  require 'simplecov'
+  SimpleCov.start
+end
+
 require 'bundler/setup' if ENV['RUBY_VERSION'][0..9] >= 'ruby-1.9.0'
 require 'test/unit'
 

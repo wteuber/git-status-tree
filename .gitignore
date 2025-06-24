@@ -4,6 +4,9 @@ mkmf.log
 *.so
 *.bundle
 
+# Test coverage
+coverage/
+
 # Temporary files
 *.swp
 *.swo
