@@ -4,7 +4,7 @@ require_relative 'lib/version'
 
 Gem::Specification.new do |s|
   s.name                  = 'git-status-tree'
-  s.required_ruby_version = '>= 2.7'
+  s.required_ruby_version = '>= 3.3'
   s.version               = GitStatusTree::VERSION
   s.licenses              = ['MIT', 'GPL-2.0']
   s.summary               = 'git status in file tree format'
