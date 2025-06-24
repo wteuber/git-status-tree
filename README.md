@@ -10,6 +10,8 @@ and files. Run `git tree` in the command line to list all files in your git repo
 untracked (?) or have been added (A), modified (M) or deleted (D). The colored output  
 shows whether a file has been added/staged (green)(+) or not (red). The current status  
 of each file is appended to it.
+
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes between versions.
 ___
 ## Installation
 git-status-tree is available on [rubygems.org](https://rubygems.org/gems/git-status-tree).
@@ -26,10 +28,16 @@ git tree
 #### Example Output
 ![image](https://user-images.githubusercontent.com/1446195/134486179-290820c6-4a8c-4cf3-8707-43adacb77b4d.png)
 
+## Options
+```
+-v, --version    Show version
+-h, --help       Show help message
+```
+
 ## Compatibility
 git-status-tree supports:
 * Git (http://git-scm.com): version 1.8+
-* Ruby (http://www.ruby-lang.org): version 2.7+
+* Ruby (http://www.ruby-lang.org): version 3.3+
 
 ## Configuration
 Set the indentation as you like, default is 4.
