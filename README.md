@@ -2,13 +2,14 @@
 
 # git-status-tree
 
-git-status-tree (https://github.com/knugie/git-status-tree) is a command line tool that  
+git-status-tree (https://github.com/wteuber/git-status-tree) is a command line tool that  
 helps you keeping track of changes in your git repository. Similar to the `tree` command  
 (https://github.com/nodakai/tree-command), git-status-tree recursively lists directories  
 and files. Run `git tree` in the command line to list all files in your git repository that are  
-untracked (?) or have been added (A), modified (M) or deleted (D). The colored output  
+untracked (?), have been added (A), modified (M), deleted (D), or renamed (R). The colored output  
 shows whether a file has been added/staged (green)(+) or not (red). The current status  
-of each file is appended to it.
+of each file is appended to it. For renamed files, the tree structure shows the original  
+location with an arrow pointing to the new name or path.
 
 See [CHANGELOG.md](CHANGELOG.md) for a list of changes between versions.
 ___
@@ -47,7 +48,7 @@ git config --global status-tree.indent <indent>
 ## Try it
 ```
 gem install git-status-tree
-git clone https://github.com/knugie/git-status-tree.git
+git clone https://github.com/wteuber/git-status-tree.git
 cd git-status-tree
 echo "change" >> README.md
 echo "add untracked" > test/untracked.txt
@@ -64,6 +65,19 @@ git tree
 ├── DELETEME.txt (D+)
 └── README.md (M)
 
+# Example with renamed files
+git reset HEAD --hard
+git clean -xdf
+git mv lib/version.rb lib/git_tree_version.rb
+git mv test/node/test_node_class.rb test/node_class_test.rb
+git tree
+.
+├── lib
+│   └── version.rb -> git_tree_version.rb (R+)
+└── test
+    └── node
+        └── test_node_class.rb -> test/node_class_test.rb (R+)
+
 # reset repo
 git reset HEAD --hard
 git clean -xdf
@@ -77,16 +91,22 @@ ___
 ## Development
 
 1. Clone this repository
-   * `git clone https://github.com/knugie/git-status-tree.git`
+   * `git clone https://github.com/wteuber/git-status-tree.git`
    * `cd git-status-tree`
 2. Install dependencies
     * `bundle install`
 3. Run tests
-    * `./test/test_git_status_tree`
-    * Tests include RuboCop code style checks
+    * `rake` - Run all tests and RuboCop checks (default)
+    * `rake test` - Run all tests with code coverage only
+    * `rake test:node` - Run Node class tests only
+    * `rake test:nodes_collection` - Run NodesCollection tests only
+    * `rake test:integration` - Run integration tests
+    * `rake test:utilities` - Run utility tests (RuboCop, SimpleCov, Version)
+    * `rake test_no_coverage` - Run tests without code coverage
+    * `rake all` - Run tests and RuboCop checks
     * SimpleCov generates code coverage reports in `coverage/`
-    * Tests will fail if coverage drops
-    * To skip coverage: `COVERAGE=false ./test/test_git_status_tree`
+    * Coverage reports available in HTML and JSON formats
+    * Tests require 100% code coverage
 4. Run RuboCop separately (optional)
     * `bundle exec rubocop`
     * To auto-correct offenses: `bundle exec rubocop -a`
@@ -94,4 +114,4 @@ ___
     * `./bin/git-status-tree`
 6. Build and install local gem
    * `gem build git-status-tree.gemspec`
-   * `gem install git-status-tree-3.0.0.gem`
+   * `gem install git-status-tree-3.1.0.gem`

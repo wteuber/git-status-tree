@@ -7,12 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0] - 2025-01-16
+
 ### Added
+- Proper support for renamed/moved files in git status
+  - Same directory renames show as: `file.rb -> new_file.rb (R+)`
+  - Cross-directory moves show full destination path: `file.rb -> lib/file.rb (R+)`
+  - Maintains correct tree structure showing original file location
 - RuboCop code style checks integrated into test suite
 - SimpleCov code coverage analysis
   - Coverage reports generated in `coverage/` directory
+  - HTML and JSON format coverage reports
   - Tests fail if coverage drops
   - Can be disabled with `COVERAGE=false` environment variable
+- Comprehensive test coverage for GitStatusTree class
+- Test coverage for Node status methods (modified?, added?, etc.)
+- Test coverage for NodesCollection comparison and validation methods
+- Code coverage improved from 87.73% to 100%
+
+### Fixed
+- Fixed incorrect tree display for renamed files that previously showed duplicated path structure ([#15](https://github.com/wteuber/git-status-tree/issues/15))
 
 ## [3.0.0] - 2025-06-25
 
@@ -65,8 +79,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - "Try it" section in README documentation
 
-[Unreleased]: https://github.com/knugie/git-status-tree/compare/v3.0.0...HEAD
-[3.0.0]: https://github.com/knugie/git-status-tree/compare/v2.0.0...v3.0.0
-[2.0.0]: https://github.com/knugie/git-status-tree/compare/v1.0.1...v2.0.0
-[1.0.1]: https://github.com/knugie/git-status-tree/compare/v1.0.0...v1.0.1
-[1.0.0]: https://github.com/knugie/git-status-tree/releases/tag/v1.0.0 
+[Unreleased]: https://github.com/wteuber/git-status-tree/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/wteuber/git-status-tree/compare/v3.0.0...v3.1.0
+[3.0.0]: https://github.com/wteuber/git-status-tree/compare/v2.0.0...v3.0.0
+[2.0.0]: https://github.com/wteuber/git-status-tree/compare/v1.0.1...v2.0.0
+[1.0.1]: https://github.com/wteuber/git-status-tree/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/wteuber/git-status-tree/releases/tag/v1.0.0 
