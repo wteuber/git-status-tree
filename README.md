@@ -26,7 +26,7 @@ Start using git-status-tree in your terminal by running:
 git tree
 ```
 #### Example Output
-![image](https://user-images.githubusercontent.com/1446195/134486179-290820c6-4a8c-4cf3-8707-43adacb77b4d.png)
+<img width="504" alt="image" src="https://github.com/user-attachments/assets/f1f15556-bf95-4fe8-8231-a8858e80f20e" />
 
 ## Options
 ```
