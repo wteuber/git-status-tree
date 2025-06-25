@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.0] - 2025-06-25
+
 ### Added
 - Command-line option `-i, --indent INDENT` to set custom indentation (2-10 spaces)
 - Parameter support for git alias - `git tree` now accepts all command-line options
@@ -90,7 +92,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - "Try it" section in README documentation
 
-[Unreleased]: https://github.com/wteuber/git-status-tree/compare/v3.1.0...HEAD
+[Unreleased]: https://github.com/wteuber/git-status-tree/compare/v3.2.0...HEAD
+[3.2.0]: https://github.com/wteuber/git-status-tree/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/wteuber/git-status-tree/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/wteuber/git-status-tree/compare/v2.0.0...v3.0.0
 [2.0.0]: https://github.com/wteuber/git-status-tree/compare/v1.0.1...v2.0.0

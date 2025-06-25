@@ -108,4 +108,4 @@ ___
     * `./bin/git-status-tree`
 6. Build and install local gem
    * `gem build git-status-tree.gemspec`
-   * `gem install git-status-tree-3.1.0.gem`change
+   * `gem install git-status-tree-3.2.0.gem`
