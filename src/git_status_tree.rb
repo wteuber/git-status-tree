@@ -3,16 +3,15 @@
 require File.join File.dirname(__FILE__), '../lib/node'
 require File.join File.dirname(__FILE__), '../lib/nodes_collection'
 require File.join File.dirname(__FILE__), '../lib/bash_color'
-require File.join File.dirname(__FILE__), '../src/git_status_tree'
+require File.join File.dirname(__FILE__), '../lib/version'
 
-# GitStatusTree
-# use GitStatusTree.new.to_s to print the current git-status-tree
+# Main class for generating and displaying git status as a tree structure
 class GitStatusTree
   attr_reader :files, :nodes, :tree
 
   def initialize(options = {})
     Node.indent = indent(options)
-    @files = `git status --porcelain`.split(/\n/)
+    @files = `git status --porcelain`.split("\n")
     @nodes = files.map { |file| Node.create_from_string file }
     @tree = nodes.reduce { |a, i| (a + i).nodes[0] }
   end

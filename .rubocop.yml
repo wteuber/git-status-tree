@@ -1,0 +1,25 @@
+AllCops:
+  TargetRubyVersion: 3.3
+  NewCops: enable
+
+# Allow longer test classes since they often contain many test methods
+Metrics/ClassLength:
+  Max: 200
+  Exclude:
+    - 'test/**/*'
+
+# Allow longer test methods since they may contain setup and assertions
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - 'test/**/*'
+
+# Test files often have many branches for different test cases
+Metrics/AbcSize:
+  Exclude:
+    - 'test/**/*'
+
+# Test classes often have many public methods (test methods)
+Metrics/BlockLength:
+  Exclude:
+    - 'test/**/*' 

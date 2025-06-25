@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-# error class for invalid NodeCollection types
 class NodesCollectionTypeError < StandardError
 end
 
-# collection of nodes
-class NodesCollection # rubocop:disable Metrics/ClassLength
+# A collection of Node objects representing a git status tree structure
+class NodesCollection
   attr_accessor :nodes
 
   def self.create_from_string(str_nodes, status = '   ')
@@ -73,7 +72,6 @@ class NodesCollection # rubocop:disable Metrics/ClassLength
     @nodes = nodes
   end
 
-  # @return [NodesCollection]
   def +(other)
     raise 'not a Node or NodesCollection' unless other.is_a?(Node) || other.is_a?(self.class)
 
@@ -85,12 +83,10 @@ class NodesCollection # rubocop:disable Metrics/ClassLength
     self.class.new(dir_nodes + file_nodes)
   end
 
-  # @return [Integer]
   def <=>(other)
     to_primitive <=> other.to_primitive
   end
 
-  # @return [Array<Node>]
   def nodes_not_in(other)
     self_names = nodes.map(&:name)
     other_names = other.nodes.map(&:name)
@@ -100,7 +96,6 @@ class NodesCollection # rubocop:disable Metrics/ClassLength
     nodes.select { |node| self_only_names.include?(node.name) }
   end
 
-  # @return [Array<Node>]
   def merge_common_nodes_with(other)
     self_names = nodes.map(&:name)
     other_names = other.nodes.map(&:name)
@@ -113,16 +108,10 @@ class NodesCollection # rubocop:disable Metrics/ClassLength
     end
   end
 
-  # @return [Array<Node>]
   def merge_nodes_with(other)
-    case other
-    when Node
-      nodes_merged = merge_nodes_with_node(other)
-    when NodesCollection
-      nodes_merged = merge_nodes_with_collection(other)
-    end
+    return merge_nodes_with_node(other) if other.is_a?(Node)
 
-    nodes_merged
+    merge_nodes_with_collection(other)
   end
 
   def files

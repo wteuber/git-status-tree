@@ -8,7 +8,7 @@ find_executable('make')
 
 # Trick Rubygems into thinking the generated Makefile was executed
 compile = File.join(Dir.pwd, "git_tree.#{RbConfig::CONFIG['DLEXT']}")
-File.open(compile, 'w') {}
+File.write(compile, '')
 
 # Install "git tree"
 puts `../../bin/git_add_alias_tree`
