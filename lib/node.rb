@@ -5,7 +5,7 @@ class NodeChildrenError < StandardError; end
 class NodeTypeError < StandardError; end
 
 # A Node represents a file or directory in the git-status-tree
-class Node # rubocop:disable Metrics/ClassLength
+class Node
   class << self
     attr_accessor :indent
   end
@@ -39,6 +39,62 @@ class Node # rubocop:disable Metrics/ClassLength
 
   def self.node_from_gs(gs_porcelain)
     status = status(gs_porcelain)
+
+    # Handle renamed files specially
+    if status.include?('R')
+      node_from_renamed_file(gs_porcelain, status)
+    else
+      # Original logic for non-renamed files
+      node_from_regular_file(gs_porcelain, status)
+    end
+  end
+
+  def self.node_from_renamed_file(gs_porcelain, status)
+    paths_part = gs_porcelain[3..]
+    return node_from_regular_file(gs_porcelain, status) unless paths_part.include?(' -> ')
+
+    old_path, new_path = paths_part.split(' -> ')
+    old_dir = File.dirname(old_path)
+
+    rename_display = build_rename_display(old_path, new_path)
+
+    build_node_structure(old_dir, rename_display, status)
+  end
+
+  private_class_method :node_from_renamed_file
+
+  def self.build_rename_display(old_path, new_path)
+    old_dir = File.dirname(old_path)
+    new_dir = File.dirname(new_path)
+    old_filename = File.basename(old_path)
+    new_filename = File.basename(new_path)
+
+    if old_dir == new_dir
+      "#{old_filename} -> #{new_filename}"
+    else
+      "#{old_filename} -> #{new_path}"
+    end
+  end
+  private_class_method :build_rename_display
+
+  def self.build_node_structure(dir_path, leaf_name, status)
+    if dir_path == '.'
+      # File is in root directory
+      new(leaf_name, nil, status)
+    else
+      # File is in subdirectory
+      ary_nodes = "./#{dir_path}".split(%r{/})
+
+      name = ary_nodes.shift
+      # Add the leaf_name as the last element
+      ary_nodes << leaf_name
+      children = NodesCollection.create_from_array(ary_nodes, status)
+      new(name, children)
+    end
+  end
+  private_class_method :build_node_structure
+
+  def self.node_from_regular_file(gs_porcelain, status)
     ary_nodes = "./#{gs_porcelain[3..]}".split(%r{/})
 
     name = ary_nodes.shift
@@ -49,6 +105,7 @@ class Node # rubocop:disable Metrics/ClassLength
       new(name, nil, status)
     end
   end
+  private_class_method :node_from_regular_file
 
   private_class_method :node_from_gs
 
@@ -76,13 +133,9 @@ class Node # rubocop:disable Metrics/ClassLength
   end
 
   def valid?
-    return valid_dir? if dir?
-    return valid_file? if file?
-
-    false
+    file? ? valid_file? : valid_dir?
   end
 
-  # @return [NodesCollection]
   def +(other)
     raise 'not valid' unless valid? && other.valid?
     raise "not a #{self.class}" unless other.is_a?(self.class)
@@ -94,10 +147,8 @@ class Node # rubocop:disable Metrics/ClassLength
 
   def <=>(other)
     return (name <=> other.name) if file? == other.file?
-    return -1 if dir? && other.file?
-    return 1 if file? && other.dir?
 
-    0
+    dir? && other.file? ? -1 : 1
   end
 
   def to_tree_s(depth = 0, open_parents = [0], last: true)
@@ -111,42 +162,34 @@ class Node # rubocop:disable Metrics/ClassLength
     str_tree
   end
 
-  #   'M'  modified
   def modified?
     status.include?('M')
   end
 
-  #   'A'  added
   def added?
     status.include?('A')
   end
 
-  #   'D'  deleted
   def deleted?
     status.include?('D')
   end
 
-  #   'R'  renamed
   def renamed?
     status.include?('R')
   end
 
-  #   'C'  copied
   def copied?
     status.include?('C')
   end
 
-  #   'U'  updated but unmerged
   def unmerged?
     status.include?('U')
   end
 
-  #   '?' new
   def new?
     status.include?('?')
   end
 
-  #   '+' staged
   def staged?
     status.include?('+')
   end
@@ -161,7 +204,8 @@ class Node # rubocop:disable Metrics/ClassLength
     raise NodeNameError, msg if name.empty?
 
     msg = '"name" must not contain "/", use create_from_string.'
-    raise NodeNameError, msg if name =~ %r{/}
+    # Allow forward slashes in rename displays (containing " -> ")
+    raise NodeNameError, msg if name =~ %r{/} && !name.include?(' -> ')
   end
 
   def color_name
@@ -176,21 +220,18 @@ class Node # rubocop:disable Metrics/ClassLength
     color_name + BashColor::NONE
   end
 
-  # Has a valid name?
   def name_valid?
     name.is_a?(String) &&
       name.length.positive? &&
-      name.match(%r{/}).nil?
+      (name.match(%r{/}).nil? || name.include?(' -> '))
   end
 
-  # Is a valid dir?
   def valid_dir?
     name_valid? &&
       children.is_a?(NodesCollection) &&
       children.valid?
   end
 
-  # Is a valid file?
   def valid_file?
     name_valid? &&
       children.nil?
