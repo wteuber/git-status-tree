@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-class TestNodeInstance < Test::Unit::TestCase # rubocop:disable Metrics/ClassLength
+require_relative '../test_helper'
+
+class TestNodeInstance < Test::Unit::TestCase
   def test_file?
     assert(Node.new('test').file?)
   end
@@ -31,10 +33,26 @@ class TestNodeInstance < Test::Unit::TestCase # rubocop:disable Metrics/ClassLen
     assert(!node.valid?)
   end
 
+  def test_invalid_node_returns_false
+    # This tests valid? returning false when node has invalid state
+    # Create a node with invalid state by manipulating its internals
+    node = Node.new('test')
+    # Force it to be neither file nor dir by setting children to an invalid value
+    node.instance_variable_set(:@children, 'invalid')
+    assert_equal(false, node.valid?)
+  end
+
   def test_children_not_valid?
     node = Node.create_from_string('./one/two/three')
     node.children.nodes.first.children.nodes.first.name = ''
     assert(!node.valid?)
+  end
+
+  def test_simple_root_file
+    node = Node.create_from_string('M  test.txt')
+    assert_equal('.', node.name)
+    assert_not_nil(node.children)
+    assert_equal('test.txt', node.children.nodes[0].name)
   end
 
   def test_file_to_primitive
@@ -43,6 +61,30 @@ class TestNodeInstance < Test::Unit::TestCase # rubocop:disable Metrics/ClassLen
 
   def test_dir_to_primitive
     assert_equal({ 'test' => [] }, Node.new('test', NodesCollection.new).to_primitive)
+  end
+
+  def test_spaceship_operator_different_types
+    file_node = Node.new('file.txt')
+    dir_node = Node.new('dir', NodesCollection.new([]))
+
+    assert_equal(-1, dir_node <=> file_node)
+    assert_equal(1, file_node <=> dir_node)
+
+    file1 = Node.new('same.txt')
+    file2 = Node.new('same.txt')
+    assert_equal(0, file1 <=> file2)
+  end
+
+  def test_spaceship_operator_different_names
+    file_a = Node.new('a.txt')
+    file_b = Node.new('b.txt')
+    assert_equal(-1, file_a <=> file_b)
+    assert_equal(1, file_b <=> file_a)
+
+    dir_a = Node.new('a_dir', NodesCollection.new([]))
+    dir_b = Node.new('b_dir', NodesCollection.new([]))
+    assert_equal(-1, dir_a <=> dir_b)
+    assert_equal(1, dir_b <=> dir_a)
   end
 
   def test_add_equal_files_class

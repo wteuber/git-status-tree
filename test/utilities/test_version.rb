@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test/unit'
+require_relative '../test_helper'
 
 class TestVersion < Test::Unit::TestCase
   def test_version_constant_defined
@@ -16,7 +16,6 @@ class TestVersion < Test::Unit::TestCase
   end
 
   def test_version_format
-    # Version should match semantic versioning format
     assert_match(/\A\d+\.\d+\.\d+\z/, GitStatusTree::VERSION)
   end
 

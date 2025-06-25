@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
   s.require_paths         = ['lib']
   s.executables           = ['git-status-tree']
   s.extensions            = Dir['ext/git_tree/extconf.rb']
-  s.homepage              = 'https://github.com/knugie/git-status-tree'
-  s.metadata              = { 'source_code_uri' => 'https://github.com/knugie/git-status-tree' }
+  s.homepage              = 'https://github.com/wteuber/git-status-tree'
+  s.metadata              = { 'source_code_uri' => 'https://github.com/wteuber/git-status-tree',
+                              'rubygems_mfa_required' => 'true' }
 end

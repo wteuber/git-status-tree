@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'test/unit'
+require_relative '../test_helper'
 require 'open3'
 
 class TestCommandLine < Test::Unit::TestCase
   def setup
-    @executable = File.join(File.dirname(__FILE__), '..', 'bin', 'git-status-tree')
+    @executable = File.join(File.dirname(__FILE__), '..', '..', 'bin', 'git-status-tree')
   end
 
   def test_version_flag_long
@@ -58,7 +58,6 @@ class TestCommandLine < Test::Unit::TestCase
       stdout, stderr, status = Open3.capture3(@executable)
       assert_equal(0, status.exitstatus)
       assert_equal('', stderr)
-      # Should output something - either the tree or "(working directory clean)"
       assert(!stdout.empty?)
     end
   end

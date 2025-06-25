@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test/unit'
+require_relative '../test_helper'
 require 'open3'
 
 class TestRuboCop < Test::Unit::TestCase
