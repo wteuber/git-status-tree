@@ -30,8 +30,9 @@ git tree
 
 ## Options
 ```
--v, --version    Show version
--h, --help       Show help message
+-i, --indent INDENT    Set indentation (2-10 spaces)
+-v, --version          Show version
+-h, --help             Show help message
 ```
 
 ## Compatibility
@@ -50,33 +51,26 @@ git config --global status-tree.indent <indent>
 gem install git-status-tree
 git clone https://github.com/wteuber/git-status-tree.git
 cd git-status-tree
+
 echo "change" >> README.md
 echo "add untracked" > test/untracked.txt
 rm DELETEME.txt
 git add DELETEME.txt
 echo "add staged" > test/staged.txt
 git add test/staged.txt
-
-git tree
-.
-├── test
-│   ├── staged.txt (A+)
-│   └── untracked.txt (?)
-├── DELETEME.txt (D+)
-└── README.md (M)
-
-# Example with renamed files
-git reset HEAD --hard
-git clean -xdf
 git mv lib/version.rb lib/git_tree_version.rb
 git mv test/node/test_node_class.rb test/node_class_test.rb
 git tree
 .
 ├── lib
 │   └── version.rb -> git_tree_version.rb (R+)
-└── test
-    └── node
-        └── test_node_class.rb -> test/node_class_test.rb (R+)
+├── test
+│   ├── node
+│   │   └── test_node_class.rb -> test/node_class_test.rb (R+)
+│   ├── staged.txt (A+)
+│   └── untracked.txt (?)
+├── DELETEME.txt (D+)
+└── README.md (M)
 
 # reset repo
 git reset HEAD --hard
@@ -114,4 +108,4 @@ ___
     * `./bin/git-status-tree`
 6. Build and install local gem
    * `gem build git-status-tree.gemspec`
-   * `gem install git-status-tree-3.1.0.gem`
+   * `gem install git-status-tree-3.1.0.gem`change

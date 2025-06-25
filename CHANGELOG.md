@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Command-line option `-i, --indent INDENT` to set custom indentation (2-10 spaces)
+- Parameter support for git alias - `git tree` now accepts all command-line options
+- VERSION file now included in gem package to fix version display when installed
+
+### Changed
+- Updated `git_add_alias_tree` script to properly pass parameters to git-status-tree
+
+### Fixed
+- Fixed `git tree -v` showing "unknown" instead of the actual version number
+
 ## [3.1.0] - 2025-01-16
 
 ### Added

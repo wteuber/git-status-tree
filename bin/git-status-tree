@@ -5,8 +5,14 @@ require 'optparse'
 require File.join File.dirname(__FILE__), '../src/git_status_tree'
 require File.join File.dirname(__FILE__), '../lib/version'
 
+options = {}
+
 parser = OptionParser.new do |opts|
   opts.banner = 'Usage: git-status-tree [options]'
+
+  opts.on('-i', '--indent INDENT', Integer, 'Set indentation (2-10 spaces)') do |indent|
+    options[:indent] = indent
+  end
 
   opts.on('-v', '--version', 'Show version') do
     puts "git-status-tree #{GitStatusTree::VERSION}"
@@ -27,4 +33,4 @@ rescue OptionParser::InvalidOption => e
   exit 1
 end
 
-puts GitStatusTree.new
+puts GitStatusTree.new(options)
