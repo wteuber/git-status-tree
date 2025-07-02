@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Fixed indentation alignment issue when using custom indent values
+  - Tree drawing characters now properly align with specified indentation
+
+### Changed
+- Refactored `Node#pre_tree` method to reduce complexity
+- Converted multiple methods to Ruby 3.0+ shorthand notation for cleaner code
 
 ## [3.2.0] - 2025-06-25
 

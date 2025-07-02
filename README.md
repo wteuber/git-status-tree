@@ -32,7 +32,7 @@ git tree
 ```
 -i, --indent INDENT    Set indentation (2-10 spaces)
 -v, --version          Show version
--h                     Show help message
+-h, --help             Show help message
 ```
 
 **Note:** Due to how git handles aliases, when using `git tree --help`, git will show the alias expansion instead of the help message. Use `git tree -h` to see the help message.

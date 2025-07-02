@@ -124,13 +124,9 @@ class Node
     end
   end
 
-  def file?
-    children.nil?
-  end
+  def file? = children.nil?
 
-  def dir?
-    !file?
-  end
+  def dir? = !file?
 
   def valid?
     file? ? valid_file? : valid_dir?
@@ -162,37 +158,14 @@ class Node
     str_tree
   end
 
-  def modified?
-    status.include?('M')
-  end
-
-  def added?
-    status.include?('A')
-  end
-
-  def deleted?
-    status.include?('D')
-  end
-
-  def renamed?
-    status.include?('R')
-  end
-
-  def copied?
-    status.include?('C')
-  end
-
-  def unmerged?
-    status.include?('U')
-  end
-
-  def new?
-    status.include?('?')
-  end
-
-  def staged?
-    status.include?('+')
-  end
+  def modified? = status.include?('M')
+  def added? = status.include?('A')
+  def deleted? = status.include?('D')
+  def renamed? = status.include?('R')
+  def copied? = status.include?('C')
+  def unmerged? = status.include?('U')
+  def new? = status.include?('?')
+  def staged? = status.include?('+')
 
   private
 
@@ -238,18 +211,24 @@ class Node
   end
 
   def pre_tree(depth, open_parents, last)
-    if depth.zero?
-      ''
-    elsif depth.positive?
-      pre_ary = Array.new(depth).fill('    ')
+    return '' if depth.zero?
+    return '' unless depth.positive?
+
+    pre_ary = build_pre_array(depth, open_parents)
+    sibling(depth, self.class.indent - 2, last, open_parents, pre_ary)
+    pre_ary * ''
+  end
+
+  def build_pre_array(depth, open_parents)
+    spaces = ' ' * self.class.indent
+    pre_ary = Array.new(depth).fill(spaces)
       indent = self.class.indent - 2
 
-      open_parents.each { |idx| pre_ary[idx] = "│#{' ' * indent} " if pre_ary[idx] == '    ' }
-
-      sibling(depth, indent, last, open_parents, pre_ary)
-
-      pre_ary * ''
+    open_parents.each do |idx|
+      pre_ary[idx] = "│#{' ' * indent} " if pre_ary[idx] == spaces
     end
+
+    pre_ary
   end
 
   def sibling(depth, indent, last, open_parents, pre_ary)
