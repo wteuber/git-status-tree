@@ -11,6 +11,7 @@ require 'tmpdir'
 require 'fileutils'
 
 require 'bash_color'
+require 'node_collapsing'
 require 'node'
 require 'nodes_collection'
 require 'git_status_tree'

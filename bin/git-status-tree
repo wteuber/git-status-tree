@@ -14,6 +14,10 @@ parser = OptionParser.new do |opts|
     options[:indent] = indent
   end
 
+  opts.on('-c', '--collapse', 'Collapse directories containing only another directory') do
+    options[:collapse] = true
+  end
+
   opts.on('-v', '--version', 'Show version') do
     puts "git-status-tree #{GitStatusTree::VERSION}"
     exit 0

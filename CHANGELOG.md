@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Added
+- Directory collapsing feature with `-c, --collapse` option
+  - Collapses consecutive single-child directories into a single line
+  - Improves readability for deeply nested structures like Java packages
+  - Example: `domains/foo/bar/module/Service.java` instead of separate lines
+
 ### Fixed
 - Fixed indentation alignment issue when using custom indent values
   - Tree drawing characters now properly align with specified indentation

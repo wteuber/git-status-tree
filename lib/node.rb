@@ -1,19 +1,24 @@
 # frozen_string_literal: true
 
+require_relative 'node_collapsing'
+
 class NodeNameError < StandardError; end
 class NodeChildrenError < StandardError; end
 class NodeTypeError < StandardError; end
 
 # A Node represents a file or directory in the git-status-tree
 class Node
+  include NodeCollapsing
+
   class << self
-    attr_accessor :indent
+    attr_accessor :indent, :collapse_dirs
   end
 
   attr_accessor :status, :name, :children
 
   def initialize(name, children = nil, status = nil)
     self.class.indent ||= 4
+    self.class.collapse_dirs ||= false
     validate_name!(name)
 
     msg = '"children" must be a NodesCollection or nil.'
@@ -152,10 +157,15 @@ class Node
 
     pre = pre_tree(depth, open_parents, last)
 
-    str_tree = "#{pre}#{color_name}\n"
-    str_tree += children.to_tree_s(depth + 1, open_parents) if children
-
-    str_tree
+    # Handle directory collapsing if enabled
+    if self.class.collapse_dirs && collapsible?
+      render_collapsed_tree(pre, depth, open_parents)
+    else
+      # Normal rendering
+      str_tree = "#{pre}#{color_name}\n"
+      str_tree += children.to_tree_s(depth + 1, open_parents) if children
+      str_tree
+    end
   end
 
   def modified? = status.include?('M')
@@ -222,7 +232,7 @@ class Node
   def build_pre_array(depth, open_parents)
     spaces = ' ' * self.class.indent
     pre_ary = Array.new(depth).fill(spaces)
-      indent = self.class.indent - 2
+    indent = self.class.indent - 2
 
     open_parents.each do |idx|
       pre_ary[idx] = "│#{' ' * indent} " if pre_ary[idx] == spaces

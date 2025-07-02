@@ -31,6 +31,7 @@ git tree
 ## Options
 ```
 -i, --indent INDENT    Set indentation (2-10 spaces)
+-c, --collapse         Collapse directories containing only another directory
 -v, --version          Show version
 -h, --help             Show help message
 ```
@@ -71,6 +72,20 @@ git tree
 │   │   └── test_node_class.rb -> test/node_class_test.rb (R+)
 │   ├── staged.txt (A+)
 │   └── untracked.txt (?)
+├── DELETEME.txt (D+)
+└── README.md (M)
+
+# Example with --collapse option for deeply nested structures
+mkdir -p domains/foo/bar/module/api/src/main/java/com/company/service
+echo "Service.java" > domains/foo/bar/module/api/src/main/java/com/company/service/Service.java
+git add domains
+git tree --collapse
+.
+├── domains/foo/bar/module/api/src/main/java/com/company/service/Service.java (A+)
+├── lib/version.rb -> git_tree_version.rb (R+)
+├── test/node/test_node_class.rb -> test/node_class_test.rb (R+)
+├── test/staged.txt (A+)
+├── test/untracked.txt (?)
 ├── DELETEME.txt (D+)
 └── README.md (M)
 

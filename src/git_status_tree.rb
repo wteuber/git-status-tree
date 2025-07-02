@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require File.join File.dirname(__FILE__), '../lib/node'
+require File.join File.dirname(__FILE__), '../lib/node_collapsing'
 require File.join File.dirname(__FILE__), '../lib/nodes_collection'
 require File.join File.dirname(__FILE__), '../lib/bash_color'
 require File.join File.dirname(__FILE__), '../lib/version'
@@ -11,6 +12,7 @@ class GitStatusTree
 
   def initialize(options = {})
     Node.indent = indent(options)
+    Node.collapse_dirs = options[:collapse] || false
     @files = `git status --porcelain`.split("\n")
     @nodes = files.map { |file| Node.create_from_string file }
     @tree = nodes.reduce { |a, i| (a + i).nodes[0] }
