@@ -2,6 +2,8 @@
 
 source 'https://rubygems.org'
 
+gem 'rake'
+
 group :test do
   gem 'rubocop', require: false
   gem 'simplecov', require: false
