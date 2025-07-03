@@ -74,6 +74,36 @@ class TestGitStatusTreeClass < Test::Unit::TestCase
     assert_equal(4, Node.indent)
   end
 
+  def test_collapse_from_git_config_true
+    `git config --global status-tree.collapse true`
+    GitStatusTree.new
+    assert_equal(true, Node.collapse_dirs)
+  ensure
+    `git config --global --unset status-tree.collapse 2>/dev/null`
+  end
+
+  def test_collapse_from_git_config_false
+    `git config --global status-tree.collapse false`
+    GitStatusTree.new
+    assert_equal(false, Node.collapse_dirs)
+  ensure
+    `git config --global --unset status-tree.collapse 2>/dev/null`
+  end
+
+  def test_collapse_default_when_no_config
+    `git config --global --unset status-tree.collapse 2>/dev/null`
+    GitStatusTree.new
+    assert_equal(false, Node.collapse_dirs)
+  end
+
+  def test_collapse_command_line_overrides_config
+    `git config --global status-tree.collapse false`
+    GitStatusTree.new(collapse: true)
+    assert_equal(true, Node.collapse_dirs)
+  ensure
+    `git config --global --unset status-tree.collapse 2>/dev/null`
+  end
+
   def test_multiple_files_and_directories
     Dir.mkdir('src')
     File.write('src/main.rb', 'puts "hello"')

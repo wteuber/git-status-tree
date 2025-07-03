@@ -49,6 +49,11 @@ Set the indentation as you like, default is 4.
 git config --global status-tree.indent <indent>
 ```
 
+Set whether to collapse directories by default, default is false.
+```
+git config --global status-tree.collapse <true|false>
+```
+
 ## Try it
 ```
 gem install git-status-tree
@@ -63,6 +68,7 @@ echo "add staged" > test/staged.txt
 git add test/staged.txt
 git mv lib/version.rb lib/git_tree_version.rb
 git mv test/node/test_node_class.rb test/node_class_test.rb
+
 git tree
 .
 ├── lib
@@ -75,19 +81,15 @@ git tree
 ├── DELETEME.txt (D+)
 └── README.md (M)
 
-# Example with --collapse option for deeply nested structures
-mkdir -p domains/foo/bar/module/api/src/main/java/com/company/service
-echo "Service.java" > domains/foo/bar/module/api/src/main/java/com/company/service/Service.java
-git add domains
-git tree --collapse
+git tree -ci 2
 .
-├── domains/foo/bar/module/api/src/main/java/com/company/service/Service.java (A+)
-├── lib/version.rb -> git_tree_version.rb (R+)
-├── test/node/test_node_class.rb -> test/node_class_test.rb (R+)
-├── test/staged.txt (A+)
-├── test/untracked.txt (?)
-├── DELETEME.txt (D+)
-└── README.md (M)
+├ lib/version.rb -> git_tree_version.rb (R+)
+├ test
+│ ├ node/test_node_class.rb -> test/node_class_test.rb (R+)
+│ ├ staged.txt (A+)
+│ └ untracked.txt (?)
+├ DELETEME.txt (D+)
+└ README.md (M)
 
 # reset repo
 git reset HEAD --hard

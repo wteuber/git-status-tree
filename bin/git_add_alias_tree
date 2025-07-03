@@ -5,6 +5,7 @@ BIN_DIR=`pwd`
 popd > /dev/null
 
 git config --global status-tree.indent 4
+git config --global status-tree.collapse false
 git config --global alias.tree "!exec $BIN_DIR/git-status-tree"
 echo '#############################'
 echo '# "git tree" has been added #'

@@ -12,7 +12,7 @@ class GitStatusTree
 
   def initialize(options = {})
     Node.indent = indent(options)
-    Node.collapse_dirs = options[:collapse] || false
+    Node.collapse_dirs = collapse(options)
     @files = `git status --porcelain`.split("\n")
     @nodes = files.map { |file| Node.create_from_string file }
     @tree = nodes.reduce { |a, i| (a + i).nodes[0] }
@@ -35,8 +35,20 @@ class GitStatusTree
     indent
   end
 
+  def collapse(options)
+    # Command line option takes precedence, then git config, then default (false)
+    return options[:collapse] if options.key?(:collapse)
+
+    config_collapse?
+  end
+
   def config
     config = `git config --global status-tree.indent`.strip
     config =~ /\A\d+\z/ ? config.to_i : nil
+  end
+
+  def config_collapse?
+    config = `git config --global status-tree.collapse`.strip
+    config == 'true'
   end
 end
