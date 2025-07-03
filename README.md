@@ -1,4 +1,4 @@
-[![Gem Version](https://badge.fury.io/rb/git-status-tree.svg)](https://badge.fury.io/rb/git-status-tree)
+[![Gem Version](https://badge.fury.io/rb/git-status-tree.svg)](https://badge.fury.io/rb/git-status-tree) [![rake](https://github.com/wteuber/git-status-tree/actions/workflows/ruby.yml/badge.svg)](https://github.com/wteuber/git-status-tree/actions/workflows/ruby.yml)
 
 # git-status-tree
 
