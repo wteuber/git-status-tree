@@ -127,6 +127,6 @@ ___
     * `./bin/git-status-tree`
 6. Build and install local gem
    * `gem build git-status-tree.gemspec`
-   * `gem install git-status-tree-3.3.0.gem`
+   * `gem install git-status-tree-3.4.0.gem`
 7. Push new version to rubygems (maintainers only)
-   * `gem push git-status-tree-3.3.0.gem`
+   * `gem push git-status-tree-3.4.0.gem`
