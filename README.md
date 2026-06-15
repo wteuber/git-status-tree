@@ -41,7 +41,7 @@ git tree
 ## Compatibility
 git-status-tree supports:
 * Git (http://git-scm.com): version 1.8+
-* Ruby (http://www.ruby-lang.org): version 3.3+
+* Ruby (http://www.ruby-lang.org): version 3.4+
 
 ## Configuration
 Set the indentation as you like, default is 4.
