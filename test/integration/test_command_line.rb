@@ -27,6 +27,7 @@ class TestCommandLine < Test::Unit::TestCase
     assert_equal(0, status.exitstatus)
     assert_equal('', stderr)
     assert_match(/Usage: git-status-tree \[options\]/, stdout)
+    assert_match(/-u, --untracked-files\s+Show untracked files in new directories/, stdout)
     assert_match(/-v, --version\s+Show version/, stdout)
     assert_match(/-h, --help\s+Show this help message/, stdout)
   end

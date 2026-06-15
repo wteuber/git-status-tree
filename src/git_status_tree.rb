@@ -13,7 +13,7 @@ class GitStatusTree
   def initialize(options = {})
     Node.indent = indent(options)
     Node.collapse_dirs = collapse(options)
-    @files = `git status --porcelain`.split("\n")
+    @files = `git status --porcelain#{untracked_files(options)}`.split("\n")
     @nodes = files.map { |file| Node.create_from_string file }
     @tree = nodes.reduce { |a, i| (a + i).nodes[0] }
   end
@@ -40,6 +40,11 @@ class GitStatusTree
     return options[:collapse] if options.key?(:collapse)
 
     config_collapse?
+  end
+
+  def untracked_files(options)
+    # Show untracked files in new directories, like `git status --untracked-files`
+    options[:untracked_files] ? ' --untracked-files=all' : ''
   end
 
   def config

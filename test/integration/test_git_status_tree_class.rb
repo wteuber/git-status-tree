@@ -118,6 +118,33 @@ class TestGitStatusTreeClass < Test::Unit::TestCase
     assert_match(/README\.md/, output)
   end
 
+  def test_untracked_directory_collapsed_by_default
+    Dir.mkdir('src')
+    File.write('src/main.rb', 'puts "hello"')
+    File.write('src/helper.rb', 'puts "help"')
+
+    tree = GitStatusTree.new
+    output = tree.to_s
+
+    # Default git status only reports the untracked directory, not its files
+    assert_match(/src \(\?\)/, output)
+    assert_no_match(/main\.rb/, output)
+    assert_no_match(/helper\.rb/, output)
+  end
+
+  def test_untracked_files_shows_files_in_new_directory
+    Dir.mkdir('src')
+    File.write('src/main.rb', 'puts "hello"')
+    File.write('src/helper.rb', 'puts "help"')
+
+    tree = GitStatusTree.new(untracked_files: true)
+    output = tree.to_s
+
+    # With untracked_files each file in the new directory is listed individually
+    assert_match(/main\.rb/, output)
+    assert_match(/helper\.rb/, output)
+  end
+
   def test_renamed_file_same_directory
     Dir.mkdir('src')
     File.write('src/old.rb', 'content')

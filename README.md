@@ -32,6 +32,7 @@ git tree
 ```
 -i, --indent INDENT    Set indentation (2-10 spaces)
 -c, --collapse         Collapse directories containing only another directory
+-u, --untracked-files  Show untracked files in new directories
 -v, --version          Show version
 -h, --help             Show help message
 ```
@@ -109,14 +110,14 @@ ___
 2. Install dependencies
     * `bundle install`
 3. Run tests
-    * `rake` - Run all tests and RuboCop checks (default)
+    * `rake` - Run all tests and RuboCop checks
     * `rake test` - Run all tests with code coverage only
     * `rake test:node` - Run Node class tests only
     * `rake test:nodes_collection` - Run NodesCollection tests only
     * `rake test:integration` - Run integration tests
     * `rake test:utilities` - Run utility tests (RuboCop, SimpleCov, Version)
     * `rake test_no_coverage` - Run tests without code coverage
-    * `rake all` - Run tests and RuboCop checks
+    * `rake all` - Run tests and RuboCop checks (default)
     * SimpleCov generates code coverage reports in `coverage/`
     * Coverage reports available in HTML and JSON formats
     * Tests require 100% code coverage

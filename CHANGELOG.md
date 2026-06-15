@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `-u, --untracked-files` option to show untracked files in new directories, like `git status --untracked-files`
+
 ### Changed
 - **BREAKING**: Ruby version requirement updated to 3.4.9 in `.ruby-version`
 - **BREAKING**: Minimum Ruby version in gemspec raised from 3.3 to 3.4
