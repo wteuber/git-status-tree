@@ -1,4 +1,4 @@
-[![Gem Version](https://badge.fury.io/rb/git-status-tree.svg)](https://badge.fury.io/rb/git-status-tree) [![CI](https://github.com/wteuber/git-status-tree/actions/workflows/ci.yml/badge.svg)](https://github.com/wteuber/git-status-tree/actions/workflows/ci.yml)
+[![CI](https://github.com/wteuber/git-status-tree/actions/workflows/ci.yml/badge.svg)](https://github.com/wteuber/git-status-tree/actions/workflows/ci.yml) [![Gem Version](https://badge.fury.io/rb/git-status-tree.svg)](https://badge.fury.io/rb/git-status-tree) [![License: MIT or GPL-2.0](https://img.shields.io/badge/license-MIT%20or%20GPL--2.0-blue.svg)](LICENSE) [![Ruby Version](https://img.shields.io/badge/ruby-%3E%3D%202.6-ruby.svg)](https://www.ruby-lang.org)
 
 # git-status-tree
 
