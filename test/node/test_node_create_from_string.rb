@@ -2,7 +2,7 @@
 
 require_relative '../test_helper'
 
-class TestNodeCreateFromString < Test::Unit::TestCase
+class TestNodeCreateFromString < Minitest::Test
   def test_create_from_string_argument_error
     assert_raise(ArgumentError) { Node.create_from_string }
   end
@@ -70,7 +70,7 @@ class TestNodeCreateFromString < Test::Unit::TestCase
     assert_equal '.', node.name
     assert_equal NodesCollection, node.children.class
     assert_equal 'file_name', node.children.nodes.first.name
-    assert_equal nil, node.children.nodes.first.children
+    assert_nil node.children.nodes.first.children
     assert_equal 'D', node.children.nodes.first.status
   end
 

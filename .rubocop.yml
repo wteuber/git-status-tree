@@ -1,10 +1,16 @@
+# TargetRubyVersion is pinned to the support floor (Ruby 2.6, the stock Ruby on
+# macOS) so RuboCop flags any syntax or APIs newer than 2.6 understands before
+# an end user on system Ruby ever hits them.
 AllCops:
-  TargetRubyVersion: 3.4
+  TargetRubyVersion: 2.6
   NewCops: enable
 
-# Allow longer test classes since they often contain many test methods
+# Allow longer test classes since they often contain many test methods.
+# The floor is also a little higher than it would otherwise be because the
+# 2.6-compatible classic `def ... end` predicates are more verbose than the
+# endless method definitions (Ruby 3.0+) they replaced.
 Metrics/ClassLength:
-  Max: 200
+  Max: 220
   Exclude:
     - 'test/**/*'
 

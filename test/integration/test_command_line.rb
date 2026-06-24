@@ -3,7 +3,7 @@
 require_relative '../test_helper'
 require 'open3'
 
-class TestCommandLine < Test::Unit::TestCase
+class TestCommandLine < Minitest::Test
   def setup
     @executable = File.join(File.dirname(__FILE__), '..', '..', 'bin', 'git-status-tree')
   end

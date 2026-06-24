@@ -2,7 +2,7 @@
 
 require_relative '../test_helper'
 
-class TestNodeCollapsing < Test::Unit::TestCase
+class TestNodeCollapsing < Minitest::Test
   def setup
     Node.indent = 4
     Node.collapse_dirs = false

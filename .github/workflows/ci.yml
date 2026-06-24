@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests (Ruby ${{ matrix.ruby }})
+    # ubuntu-22.04 still provides a prebuilt Ruby 2.6 (the support floor);
+    # newer runner images do not.
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ['2.6', '3.4', '4.0']
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      # Runs the whole suite (test/**/test_*.rb) on minitest and fails if
+      # library line coverage drops below the threshold. Uses only the standard
+      # library (minitest + the coverage extension), so no install is needed.
+      - name: Run tests with coverage
+        run: ruby test/coverage.rb
+
+  lint:
+    name: RuboCop (2.6 compatibility)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '4.0'
+      - name: Install RuboCop
+        run: gem install rubocop --no-document
+      - name: Lint
+        run: rubocop

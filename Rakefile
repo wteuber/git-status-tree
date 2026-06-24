@@ -2,57 +2,39 @@
 
 require 'rake/testtask'
 
-# Default task runs all tests and RuboCop
-task default: :all
+# Default task runs the test suite and RuboCop
+task default: %i[test rubocop]
 
-desc 'Run all tests with coverage'
+desc 'Run the test suite'
 Rake::TestTask.new(:test) do |t|
   t.libs << 'test'
-  t.test_files = FileList['test/**/*test*.rb']
+  t.test_files = FileList['test/**/test_*.rb'].exclude('test/test_helper.rb')
   t.verbose = true
 end
 
-desc 'Run tests without coverage'
-task :test_no_coverage do
-  ENV['COVERAGE'] = 'false'
-  Rake::Task[:test].invoke
+# Stdlib-only coverage gate (no gem dependency, runs on the Ruby 2.6 floor).
+# This is what CI runs; it loads the whole suite and fails below the threshold.
+desc 'Run the test suite with the stdlib coverage gate'
+task :coverage do
+  ruby 'test/coverage.rb'
 end
 
-desc 'Run specific test file (e.g., rake test:node)'
 namespace :test do
-  desc 'Run node tests'
-  Rake::TestTask.new(:node) do |t|
-    t.libs << 'test'
-    t.test_files = FileList['test/node/*test*.rb']
-    t.verbose = true
-  end
-
-  desc 'Run nodes_collection tests'
-  Rake::TestTask.new(:nodes_collection) do |t|
-    t.libs << 'test'
-    t.test_files = FileList['test/nodes_collection/*test*.rb']
-    t.verbose = true
-  end
-
-  desc 'Run integration tests'
-  Rake::TestTask.new(:integration) do |t|
-    t.libs << 'test'
-    t.test_files = FileList['test/integration/*test*.rb']
-    t.verbose = true
-  end
-
-  desc 'Run utility tests (RuboCop, SimpleCov, etc.)'
-  Rake::TestTask.new(:utilities) do |t|
-    t.libs << 'test'
-    t.test_files = FileList['test/utilities/*test*.rb']
-    t.verbose = true
+  {
+    node: 'test/node/test_*.rb',
+    nodes_collection: 'test/nodes_collection/test_*.rb',
+    integration: 'test/integration/test_*.rb'
+  }.each do |name, glob|
+    desc "Run #{name} tests"
+    Rake::TestTask.new(name) do |t|
+      t.libs << 'test'
+      t.test_files = FileList[glob]
+      t.verbose = true
+    end
   end
 end
 
-desc 'Run RuboCop'
+desc 'Run RuboCop (Ruby 2.6 compatibility check)'
 task :rubocop do
   sh 'bundle exec rubocop'
 end
-
-desc 'Run tests and RuboCop'
-task all: %i[test rubocop]

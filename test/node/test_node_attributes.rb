@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TestNodeAttributes < Test::Unit::TestCase
+class TestNodeAttributes < Minitest::Test
   def test_node_name_file
     assert_equal('file.txt', Node.new('file.txt').name)
   end

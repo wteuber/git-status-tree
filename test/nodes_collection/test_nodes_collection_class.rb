@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TestNodesCollectionClass < Test::Unit::TestCase
+class TestNodesCollectionClass < Minitest::Test
   def test_defined?
     assert_equal('constant', defined?(NodesCollection))
   end

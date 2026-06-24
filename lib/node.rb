@@ -129,9 +129,13 @@ class Node
     end
   end
 
-  def file? = children.nil?
+  def file?
+    children.nil?
+  end
 
-  def dir? = !file?
+  def dir?
+    !file?
+  end
 
   def valid?
     file? ? valid_file? : valid_dir?
@@ -168,14 +172,37 @@ class Node
     end
   end
 
-  def modified? = status.include?('M')
-  def added? = status.include?('A')
-  def deleted? = status.include?('D')
-  def renamed? = status.include?('R')
-  def copied? = status.include?('C')
-  def unmerged? = status.include?('U')
-  def new? = status.include?('?')
-  def staged? = status.include?('+')
+  def modified?
+    status.include?('M')
+  end
+
+  def added?
+    status.include?('A')
+  end
+
+  def deleted?
+    status.include?('D')
+  end
+
+  def renamed?
+    status.include?('R')
+  end
+
+  def copied?
+    status.include?('C')
+  end
+
+  def unmerged?
+    status.include?('U')
+  end
+
+  def new?
+    status.include?('?')
+  end
+
+  def staged?
+    status.include?('+')
+  end
 
   private
 
