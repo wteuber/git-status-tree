@@ -13,7 +13,7 @@ class GitStatusTree
   def initialize(options = {})
     Node.indent = indent(options)
     Node.collapse_dirs = collapse(options)
-    @files = `git status --porcelain#{untracked_files(options)}`.split("\n")
+    @files = parse_status(`git status --porcelain -z#{untracked_files(options)}`)
     @nodes = files.map { |file| Node.create_from_string file }
     @tree = nodes.reduce { |a, i| (a + i).nodes[0] }
   end
@@ -27,6 +27,38 @@ class GitStatusTree
   end
 
   private
+
+  # Parse NUL-terminated `git status --porcelain -z` output into porcelain
+  # entry strings. Unlike the default output, -z never quotes or escapes
+  # paths, so names with spaces, non-ASCII characters, quotes, backslashes
+  # or tabs survive intact. Rename/copy entries span two NUL-separated
+  # tokens ("<XY> <dest>\0<orig>\0") and are reassembled into the
+  # "<XY> <orig> -> <dest>" form the node parser expects.
+  def parse_status(raw)
+    # Paths are emitted as raw UTF-8 bytes; tag them so names display literally.
+    tokens = raw.force_encoding('UTF-8').split("\0")
+    files = []
+    index = 0
+    while index < tokens.length
+      entry = tokens[index]
+      index += 1
+      next if entry.nil? || entry.empty?
+
+      if rename_or_copy?(entry)
+        orig = tokens[index]
+        index += 1
+        files << "#{entry[0, 3]}#{orig} -> #{entry[3..]}"
+      else
+        files << entry
+      end
+    end
+    files
+  end
+
+  def rename_or_copy?(entry)
+    status = entry[0, 2]
+    status.include?('R') || status.include?('C')
+  end
 
   def indent(options)
     indent = options[:indent] || config || 4

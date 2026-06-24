@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.1] - 2026-06-24
+
+### Fixed
+- Paths containing spaces, non-ASCII characters, quotes, backslashes or tabs are no longer split on git's surrounding quotes, which previously broke the tree (e.g. `"How To/Commands.md"` rendered as two mangled nodes). Status is now read via `git status --porcelain -z`, whose output is never quoted or escaped, and non-ASCII names display literally.
+
 ## [3.5.0] - 2026-06-15
 
 ### Added

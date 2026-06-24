@@ -192,4 +192,69 @@ class TestGitStatusTreeClass < Test::Unit::TestCase
     assert_match(/old_name\.txt -> new_name\.txt/, output)
     assert_match(/\(R\+\)/, output)
   end
+
+  def test_file_with_spaces_in_directory_and_name
+    Dir.mkdir('How To')
+    File.write('How To/Commands.md', 'content')
+    `git add .`
+    `git commit -m "Add Commands.md"`
+    File.write('How To/Commands.md', 'changed')
+
+    tree = GitStatusTree.new
+    output = tree.to_s
+
+    # Directory and file with spaces must not be split on the surrounding
+    # quotes git would otherwise add to the porcelain output.
+    assert_match(/How To/, output)
+    assert_match(/Commands\.md \(M\)/, output)
+    assert_no_match(/"/, output)
+    # Exactly two nodes: the "How To" directory and the file inside it.
+    assert_equal(1, tree.files.length)
+  end
+
+  def test_file_with_non_ascii_name
+    File.write('Ünïcode.md', 'content')
+    `git add .`
+    `git commit -m "Add unicode file"`
+    File.write('Ünïcode.md', 'changed')
+
+    tree = GitStatusTree.new
+    output = tree.to_s
+
+    # Non-ASCII characters are shown literally, never octal-escaped.
+    assert_match(/Ünïcode\.md \(M\)/, output)
+    assert_no_match(/\\3/, output)
+  end
+
+  def test_renamed_file_with_spaces
+    Dir.mkdir('How To')
+    File.write('How To/Old Name.md', 'content')
+    `git add .`
+    `git commit -m "Add Old Name.md"`
+
+    File.rename('How To/Old Name.md', 'How To/New Name.md')
+    `git add .`
+
+    tree = GitStatusTree.new
+    output = tree.to_s
+
+    assert_match(/Old Name\.md -> New Name\.md/, output)
+    assert_match(/\(R\+\)/, output)
+    assert_no_match(/"/, output)
+  end
+
+  def test_file_with_quote_in_name
+    File.write('weird"name.txt', 'content')
+    `git add .`
+    `git commit -m "Add weird file"`
+    File.write('weird"name.txt', 'changed')
+
+    tree = GitStatusTree.new
+    output = tree.to_s
+
+    # A literal double quote in the name is preserved, not treated as a
+    # porcelain quoting delimiter.
+    assert_match(/weird"name\.txt \(M\)/, output)
+    assert_equal(1, tree.files.length)
+  end
 end
