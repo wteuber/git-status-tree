@@ -2,7 +2,7 @@
 
 require_relative '../test_helper'
 
-class TestNodeInstance < Test::Unit::TestCase
+class TestNodeInstance < Minitest::Test
   def test_file?
     assert(Node.new('test').file?)
   end

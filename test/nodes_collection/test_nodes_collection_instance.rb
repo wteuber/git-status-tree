@@ -2,7 +2,7 @@
 
 require_relative '../test_helper'
 
-class TestNodesCollectionInstance < Test::Unit::TestCase
+class TestNodesCollectionInstance < Minitest::Test
   def test_new?
     assert(NodesCollection.respond_to?(:new))
   end

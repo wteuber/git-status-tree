@@ -2,7 +2,7 @@
 
 require_relative '../test_helper'
 
-class TestGitStatusTreeClass < Test::Unit::TestCase
+class TestGitStatusTreeClass < Minitest::Test
   def setup
     @original_dir = Dir.pwd
     @test_dir = Dir.mktmpdir('git_test')

@@ -2,7 +2,7 @@
 
 require_relative '../test_helper'
 
-class TestVersion < Test::Unit::TestCase
+class TestVersion < Minitest::Test
   def test_version_constant_defined
     assert_equal('constant', defined?(GitStatusTree::VERSION))
   end

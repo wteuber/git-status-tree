@@ -2,15 +2,14 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.3)
-    docile (1.4.1)
     json (2.12.2)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
+    minitest (5.27.0)
     parallel (1.27.0)
     parser (3.3.8.0)
       ast (~> 2.4.1)
       racc
-    power_assert (2.0.5)
     prism (1.4.0)
     racc (1.8.1)
     rainbow (3.1.1)
@@ -31,17 +30,6 @@ GEM
       parser (>= 3.3.7.2)
       prism (~> 1.4)
     ruby-progressbar (1.13.0)
-    simplecov (0.22.0)
-      docile (~> 1.1)
-      simplecov-html (~> 0.11)
-      simplecov_json_formatter (~> 0.1)
-    simplecov-html (0.13.1)
-    simplecov-json (0.2.3)
-      json
-      simplecov
-    simplecov_json_formatter (0.1.4)
-    test-unit (3.6.8)
-      power_assert
     unicode-display_width (3.1.4)
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
@@ -51,11 +39,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  minitest
   rake
   rubocop
-  simplecov
-  simplecov-json
-  test-unit
+
+RUBY VERSION
+   ruby 3.4.9p82
 
 BUNDLED WITH
    2.5.22

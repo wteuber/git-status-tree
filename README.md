@@ -1,4 +1,4 @@
-[![Gem Version](https://badge.fury.io/rb/git-status-tree.svg)](https://badge.fury.io/rb/git-status-tree) [![rake](https://github.com/wteuber/git-status-tree/actions/workflows/ruby.yml/badge.svg)](https://github.com/wteuber/git-status-tree/actions/workflows/ruby.yml)
+[![Gem Version](https://badge.fury.io/rb/git-status-tree.svg)](https://badge.fury.io/rb/git-status-tree) [![CI](https://github.com/wteuber/git-status-tree/actions/workflows/ci.yml/badge.svg)](https://github.com/wteuber/git-status-tree/actions/workflows/ci.yml)
 
 # git-status-tree
 
@@ -42,7 +42,14 @@ git tree
 ## Compatibility
 git-status-tree supports:
 * Git (http://git-scm.com): version 1.8+
-* Ruby (http://www.ruby-lang.org): version 3.4+
+* Ruby (http://www.ruby-lang.org): version 2.6+
+
+Ruby 2.6 is the support floor because it is the stock Ruby shipped with macOS,
+so git-status-tree runs out of the box without installing a newer Ruby. The
+runtime uses only the standard library (no gem dependencies), and RuboCop's
+`TargetRubyVersion` is pinned to 2.6 to flag any syntax or APIs newer than 2.6
+before they reach a user on system Ruby. Newer Ruby versions (3.x, 4.x) are
+fully supported as well.
 
 ## Configuration
 Set the indentation as you like, default is 4.
@@ -110,17 +117,15 @@ ___
 2. Install dependencies
     * `bundle install`
 3. Run tests
-    * `rake` - Run all tests and RuboCop checks
-    * `rake test` - Run all tests with code coverage only
+    * `rake` - Run all tests and RuboCop checks (default)
+    * `rake test` - Run all tests
     * `rake test:node` - Run Node class tests only
     * `rake test:nodes_collection` - Run NodesCollection tests only
     * `rake test:integration` - Run integration tests
-    * `rake test:utilities` - Run utility tests (RuboCop, SimpleCov, Version)
-    * `rake test_no_coverage` - Run tests without code coverage
-    * `rake all` - Run tests and RuboCop checks (default)
-    * SimpleCov generates code coverage reports in `coverage/`
-    * Coverage reports available in HTML and JSON formats
-    * Tests require 100% code coverage
+    * `ruby test/coverage.rb` - Run the suite with the coverage gate (what CI runs)
+    * The suite runs on minitest (bundled with Ruby) and measures coverage with
+      the standard library's `coverage` extension, so it needs no gem install and
+      runs on every supported Ruby (2.6+). Tests require 100% library coverage.
 4. Run RuboCop separately (optional)
     * `bundle exec rubocop`
     * To auto-correct offenses: `bundle exec rubocop -a`
@@ -128,6 +133,6 @@ ___
     * `./bin/git-status-tree`
 6. Build and install local gem
    * `gem build git-status-tree.gemspec`
-   * `gem install git-status-tree-3.5.1.gem`
+   * `gem install git-status-tree-3.6.0.gem`
 7. Push new version to rubygems (maintainers only)
-   * `gem push git-status-tree-3.5.1.gem`
+   * `gem push git-status-tree-3.6.0.gem`

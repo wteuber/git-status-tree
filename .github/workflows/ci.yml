@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests (Ruby ${{ matrix.ruby }})
+    # ubuntu-22.04 still provides a prebuilt Ruby 2.6 (the support floor);
+    # newer runner images do not.
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ['2.6', '3.4', '4.0']
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          # The suite is stdlib-only (minitest + the coverage extension), so it
+          # needs no gems and no Bundler. Skipping Bundler also avoids trying to
+          # install a modern Bundler on Ruby 2.6, which is unsupported there.
+          bundler: none
+      # Runs the whole suite (test/**/test_*.rb) on minitest and fails if
+      # library line coverage drops below the threshold.
+      - name: Run tests with coverage
+        run: ruby test/coverage.rb
+
+  lint:
+    name: RuboCop (2.6 compatibility)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '4.0'
+      # Pinned to the version in Gemfile.lock so CI matches local and does not
+      # break when a newer RuboCop ships new cops. Keep in sync with Gemfile.lock.
+      - name: Install RuboCop
+        run: gem install rubocop -v 1.77.0 --no-document
+      - name: Lint
+        run: rubocop

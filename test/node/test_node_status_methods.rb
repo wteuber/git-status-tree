@@ -2,7 +2,7 @@
 
 require_relative '../test_helper'
 
-class TestNodeStatusMethods < Test::Unit::TestCase
+class TestNodeStatusMethods < Minitest::Test
   def test_modified_status
     node = Node.new('file.txt', nil, 'M ')
     assert(node.modified?)

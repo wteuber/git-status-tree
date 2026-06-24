@@ -4,7 +4,7 @@ require_relative '../test_helper'
 require 'tempfile'
 require 'tmpdir'
 
-class TestCommandLineCollapse < Test::Unit::TestCase
+class TestCommandLineCollapse < Minitest::Test
   def setup
     @original_dir = Dir.pwd
     @test_dir = Dir.mktmpdir

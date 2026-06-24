@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.6.0] - 2026-06-24
+
+### Added
+- Stdlib-only coverage gate (`test/coverage.rb`) built on Ruby's `coverage` extension; enforces 100% library coverage with no gem dependency, so it runs on every supported Ruby
+- CI now tests against Ruby 2.6, 3.4 and 4.0 (`.github/workflows/ci.yml`), with a separate RuboCop lint job
+
+### Changed
+- Minimum Ruby version in gemspec lowered from 3.4 to 2.6 (the stock macOS system Ruby), so git-status-tree runs out of the box without installing a newer Ruby. The runtime uses only the standard library.
+- Rewrote endless method definitions (Ruby 3.0+) in `lib/node.rb` as classic `def`/`end` methods so the code parses on Ruby 2.6
+- Test suite migrated from test-unit to minitest (bundled with every Ruby 2.6+)
+- `.rubocop.yml` `TargetRubyVersion` lowered to 2.6 to flag any syntax newer than the support floor
+- `.ruby-version` set to 4.0.4
+
+### Removed
+- SimpleCov and test-unit development dependencies (replaced by minitest and the stdlib coverage gate)
+
 ## [3.5.1] - 2026-06-24
 
 ### Fixed

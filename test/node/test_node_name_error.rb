@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TestNodeNameError < Test::Unit::TestCase
+class TestNodeNameError < Minitest::Test
   def test_no_node_name_error
     assert_nothing_raised(NodeNameError) { Node.new('valid') }
   end
