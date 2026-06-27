@@ -11,7 +11,8 @@ class Node
   include NodeCollapsing
 
   class << self
-    attr_accessor :indent, :collapse_dirs
+    # mode is :status (default working-tree view) or :commit (history view).
+    attr_accessor :indent, :collapse_dirs, :mode
   end
 
   attr_accessor :status, :name, :children
@@ -223,11 +224,19 @@ class Node
     if dir?
       color_name += BashColor::EMB + name
     else
-      color_name += BashColor::G if staged?
-      color_name += BashColor::R unless staged?
+      color_name += status_color(status)
       color_name += "#{name} (#{status})"
     end
     color_name + BashColor::NONE
+  end
+
+  # Commit-mode entries render in a distinct third color (cyan) to signal
+  # "history view, not your working tree". Status mode keeps the green=staged /
+  # red=dirty palette unchanged. Shared with the collapsed-file renderer.
+  def status_color(status)
+    return BashColor::C if self.class.mode == :commit
+
+    status.include?('+') ? BashColor::G : BashColor::R
   end
 
   def name_valid?

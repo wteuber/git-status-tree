@@ -15,6 +15,13 @@ class TestGitStatusTreeClass < Minitest::Test
   def teardown
     Dir.chdir(@original_dir)
     FileUtils.rm_rf(@test_dir)
+    # indent / collapse_dirs / mode are class-level state on Node. These tests
+    # exercise non-default values (custom indent, collapse, commit mode); reset
+    # to defaults so they don't leak into other files' default-state assertions
+    # under minitest's randomized test order.
+    Node.indent = 4
+    Node.collapse_dirs = false
+    Node.mode = :status
   end
 
   def test_initialize_clean_repository
@@ -28,6 +35,56 @@ class TestGitStatusTreeClass < Minitest::Test
   def test_to_s_clean_repository
     tree = GitStatusTree.new
     assert_equal('(working directory clean)', tree.to_s)
+  end
+
+  def test_no_commits_uses_status_mode
+    GitStatusTree.new
+    assert_equal(:status, Node.mode)
+  end
+
+  def test_commit_arg_uses_commit_mode
+    File.write('a.rb', 'x')
+    `git add .`
+    `git commit -m "c1" --quiet`
+    GitStatusTree.new(commits: ['HEAD'])
+    assert_equal(:commit, Node.mode)
+  end
+
+  def test_commit_mode_empty_diff_reports_no_changes
+    File.write('a.rb', 'x')
+    `git add .`
+    `git commit -m "c1" --quiet`
+    tree = GitStatusTree.new(commits: %w[HEAD HEAD])
+    assert_nil(tree.tree)
+    assert_equal('(no changes)', tree.to_s)
+  end
+
+  def test_commit_range_token_expands_to_two_endpoints
+    File.write('a.rb', 'x')
+    `git add .`
+    `git commit -m "c1" --quiet`
+    File.write('b.rb', 'y')
+    `git add .`
+    `git commit -m "c2" --quiet`
+
+    tree = GitStatusTree.new(commits: ['HEAD~1..HEAD'])
+    assert_match(/b\.rb \(A\)/, tree.to_s)
+  end
+
+  def test_invalid_revision_raises_revision_error
+    error = assert_raises(GitStatusTree::RevisionError) do
+      GitStatusTree.new(commits: ['no-such-rev'])
+    end
+    assert_match(/fatal: bad revision 'no-such-rev'/, error.message)
+  end
+
+  def test_symmetric_difference_range_raises_revision_error
+    File.write('a.rb', 'x')
+    `git add .`
+    `git commit -m "c1" --quiet`
+    assert_raises(GitStatusTree::RevisionError) do
+      GitStatusTree.new(commits: ['HEAD...HEAD'])
+    end
   end
 
   def test_initialize_with_untracked_file

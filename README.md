@@ -28,6 +28,30 @@ git tree
 #### Example Output
 <img width="504" alt="image" src="https://github.com/user-attachments/assets/f1f15556-bf95-4fe8-8231-a8858e80f20e" />
 
+## Inspecting commits
+The same tree rendering can inspect history. Pass one or two commits (any
+revision git accepts: a SHA, `HEAD`, `HEAD~3`, a branch, or a tag):
+
+```
+git tree                # working-tree status (default)
+git tree <commit>       # files changed in <commit> (vs. its first parent)
+git tree <c1> <c2>      # files that differ between the two commits
+git tree <c1>..<c2>     # same as above, as a single range token
+```
+
+Commit-mode entries render in cyan (distinct from the green=staged /
+red=dirty working-tree palette) with the git status letter: `A` added,
+`M` modified, `D` deleted, `R` renamed, `T` type-changed. Renames show as
+`old -> new (R)`. The `-i/--indent` and `-c/--collapse` options apply in all
+modes.
+
+Notes:
+- `-u/--untracked-files` is meaningless for commits and is ignored.
+- A root commit (no parent) lists every file as added.
+- A single-commit view of a **merge** commit may be empty; pass the two
+  parents explicitly to see the difference.
+- The symmetric-difference form `<c1>...<c2>` is not supported (use `..`).
+
 ## Options
 ```
 -i, --indent INDENT    Set indentation (2-10 spaces)
