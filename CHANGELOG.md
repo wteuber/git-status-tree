@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Commit history views: `git tree <commit>` shows the files changed in a commit (vs. its first parent) and `git tree <c1> <c2>` (or the single-token `git tree <c1>..<c2>` range) shows the files that differ between two commits. Any revision git accepts works (SHA, `HEAD`, `HEAD~3`, branch, tag).
+- Commit-mode entries render in a distinct cyan color (separate from the green=staged / red=dirty working-tree palette) with the git status letter (`A`/`M`/`D`/`R`/`T`); renames detected with `-M` display as `old -> new (R)`.
+- Root commits list every file as added; an empty commit diff prints `(no changes)`.
+- `-i/--indent` and `-c/--collapse` apply in all modes.
+
+### Notes
+- `-u/--untracked-files` is ignored for commit views (not applicable).
+- The symmetric-difference range `<c1>...<c2>` is rejected with a clear error; use `..`.
+- A single-commit view of a merge commit may be empty (pass the two parents explicitly).
+
 ## [3.6.0] - 2026-06-24
 
 ### Added
