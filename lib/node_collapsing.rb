@@ -104,7 +104,6 @@ module NodeCollapsing
   end
 
   def color_file_with_status(file_name, status)
-    color = status.include?('+') ? BashColor::G : BashColor::R
-    "#{color}#{file_name} (#{status})#{BashColor::NONE}"
+    "#{status_color(status)}#{file_name} (#{status})#{BashColor::NONE}"
   end
 end

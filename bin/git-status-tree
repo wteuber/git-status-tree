@@ -41,4 +41,19 @@ rescue OptionParser::InvalidOption => e
   exit 1
 end
 
-puts GitStatusTree.new(options)
+# Residual ARGV holds the positional commit args (options are consumed by
+# parse!). At most two commits are accepted; a single "A..B" range token counts
+# as one positional and is expanded later in GitStatusTree.
+if ARGV.length > 2
+  warn 'Error: git tree accepts at most two commits'
+  warn parser
+  exit 1
+end
+options[:commits] = ARGV.dup
+
+begin
+  puts GitStatusTree.new(options)
+rescue GitStatusTree::RevisionError => e
+  warn e.message
+  exit 1
+end
