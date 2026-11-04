@@ -1,6 +1,10 @@
 # TargetRubyVersion is pinned to the support floor (Ruby 2.6, the stock Ruby on
 # macOS) so RuboCop flags any syntax or APIs newer than 2.6 understands before
 # an end user on system Ruby ever hits them.
+plugins:
+  - rubocop-minitest
+  - rubocop-rake
+
 AllCops:
   TargetRubyVersion: 2.6
   NewCops: enable

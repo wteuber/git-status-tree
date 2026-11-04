@@ -39,9 +39,13 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '4.0'
-      # Pinned to the version in Gemfile.lock so CI matches local and does not
-      # break when a newer RuboCop ships new cops. Keep in sync with Gemfile.lock.
-      - name: Install RuboCop
-        run: gem install rubocop -v 1.77.0 --no-document
+      # Pinned to the versions in the Gemfile so CI matches local and does not
+      # break when a newer RuboCop or plugin ships new cops. Keep in sync with
+      # the Gemfile.
+      - name: Install RuboCop and plugins
+        run: |
+          gem install rubocop -v 1.77.0 --no-document
+          gem install rubocop-minitest -v 0.40.0 --no-document
+          gem install rubocop-rake -v 0.7.1 --no-document
       - name: Lint
         run: rubocop

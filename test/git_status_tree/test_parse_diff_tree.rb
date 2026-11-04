@@ -19,16 +19,19 @@ class TestParseDiffTree < Minitest::Test
 
   def test_regular_entries
     raw = "M\0src/main.rb\0A\0README.md\0D\0old.txt\0"
+
     assert_equal([' M src/main.rb', ' A README.md', ' D old.txt'], parse(raw))
   end
 
   def test_rename_triplet
     raw = "R100\0old/path.rb\0new/path.rb\0"
+
     assert_equal([' R old/path.rb -> new/path.rb'], parse(raw))
   end
 
   def test_copy_triplet
     raw = "C075\0src/a.rb\0src/b.rb\0"
+
     assert_equal([' C src/a.rb -> src/b.rb'], parse(raw))
   end
 
@@ -45,6 +48,7 @@ class TestParseDiffTree < Minitest::Test
   def test_multibyte_paths
     raw = "M\0Ünïcode.md\0"
     result = parse(raw)
+
     assert_equal([' M Ünïcode.md'], result)
     assert_equal(Encoding::UTF_8, result.first.encoding)
   end
