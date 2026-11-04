@@ -30,9 +30,9 @@ GEM
       parser (>= 3.3.7.2)
       prism (~> 1.4)
     ruby-progressbar (1.13.0)
-    unicode-display_width (3.1.4)
-      unicode-emoji (~> 4.0, >= 4.0.4)
-    unicode-emoji (4.0.4)
+    unicode-display_width (3.3.0)
+      unicode-emoji (~> 4.3)
+    unicode-emoji (4.3.0)
 
 PLATFORMS
   arm64-darwin-23
@@ -44,7 +44,7 @@ DEPENDENCIES
   rubocop
 
 RUBY VERSION
-   ruby 3.4.9p82
+  ruby 3.4.9p82
 
 BUNDLED WITH
-   2.5.22
+  4.0.19
