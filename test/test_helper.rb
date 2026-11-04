@@ -22,6 +22,23 @@ module Minitest
   end
 end
 
+# Old-minitest fallbacks: assertions that newer minitest provides (and that
+# rubocop-minitest prefers) but the minitest bundled with Ruby 2.6 lacks.
+# Remove this section when Ruby 2.6 support is dropped.
+module Minitest
+  class Test
+    # The cops are disabled because this IS the fallback implementation (their
+    # autocorrection would make it call itself).
+    unless method_defined?(:assert_path_exists)
+      def assert_path_exists(path, msg = nil)
+        # rubocop:disable Minitest/AssertPathExists, Minitest/AssertWithExpectedArgument
+        assert(File.exist?(path), msg || "Expected path '#{path}' to exist")
+        # rubocop:enable Minitest/AssertPathExists, Minitest/AssertWithExpectedArgument
+      end
+    end
+  end
+end
+
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 $LOAD_PATH.unshift File.expand_path('../src', __dir__)
 

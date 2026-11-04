@@ -14,5 +14,11 @@ ruby '>= 2.6.0'
 group :development, :test do
   gem 'minitest' # ships with Ruby; declared so `bundle exec rake test` resolves it
   gem 'rake'
-  gem 'rubocop', require: false
+  # RuboCop and its plugins are pinned exactly so new cops never appear without
+  # an explicit upgrade. This is the single source of truth: CI's lint job
+  # installs from Gemfile.lock. rubocop-minitest 0.40.0 is the newest release
+  # that supports RuboCop 1.77.
+  gem 'rubocop', '1.77.0', require: false
+  gem 'rubocop-minitest', '0.40.0', require: false
+  gem 'rubocop-rake', '0.7.1', require: false
 end

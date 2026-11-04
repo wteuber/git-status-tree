@@ -37,6 +37,7 @@ class TestCommandLineCommitRange < Minitest::Test
 
   def test_two_commits_show_diff_between_them
     stdout, stderr, status = run_bin(@c1, @c2)
+
     assert_equal(0, status.exitstatus)
     assert_equal('', stderr)
     assert_match(/added\.rb \(A\)/, stdout)
@@ -44,18 +45,21 @@ class TestCommandLineCommitRange < Minitest::Test
 
   def test_reversed_order_flips_add_to_delete
     stdout, _stderr, status = run_bin(@c2, @c1)
+
     assert_equal(0, status.exitstatus)
     assert_match(/added\.rb \(D\)/, stdout)
   end
 
   def test_range_token_equivalent_to_two_args
     stdout, _stderr, status = run_bin("#{@c1}..#{@c2}")
+
     assert_equal(0, status.exitstatus)
     assert_match(/added\.rb \(A\)/, stdout)
   end
 
   def test_symmetric_difference_range_rejected
     stdout, stderr, status = run_bin("#{@c1}...#{@c2}")
+
     assert_equal(1, status.exitstatus)
     assert_equal('', stdout)
     assert_match(/'\.\.\.' range is not supported/, stderr)
@@ -68,6 +72,7 @@ class TestCommandLineCommitRange < Minitest::Test
     c3 = `git rev-parse HEAD`.strip
 
     stdout, _stderr, status = run_bin(@c2, c3)
+
     assert_equal(0, status.exitstatus)
     assert_match(%r{base\.rb -> lib/base\.rb \(R\)}, stdout)
   end
@@ -80,6 +85,7 @@ class TestCommandLineCommitRange < Minitest::Test
     c3 = `git rev-parse HEAD`.strip
 
     stdout, _stderr, status = run_bin('-i', '8', @c2, c3)
+
     assert_equal(0, status.exitstatus)
     assert_match(/deep/, stdout)
     # An 8-space indent leaves a wider gutter under the directory branch.
@@ -88,10 +94,12 @@ class TestCommandLineCommitRange < Minitest::Test
 
   def test_open_ended_range_defaults_to_head
     stdout, stderr, status = run_bin("#{@c1}..")
+
     assert_equal(0, status.exitstatus, stderr)
     assert_match(/added\.rb \(A\)/, stdout)
 
     stdout, stderr, status = run_bin("..#{@c1}")
+
     assert_equal(0, status.exitstatus, stderr)
     assert_match(/added\.rb \(D\)/, stdout)
   end
@@ -108,6 +116,7 @@ class TestCommandLineCommitRange < Minitest::Test
     `git merge --no-ff --quiet -m "merge" side`
 
     stdout, stderr, status = run_bin('HEAD')
+
     assert_equal(0, status.exitstatus, stderr)
     assert_match(/side\.rb \(A\)/, stdout)
     refute_match(/main\.rb/, stdout)
@@ -115,6 +124,7 @@ class TestCommandLineCommitRange < Minitest::Test
 
   def test_shell_metacharacters_are_not_interpreted
     stdout, stderr, status = run_bin('HEAD;echo INJECTED>&2;')
+
     assert_equal(1, status.exitstatus)
     assert_equal('', stdout)
     refute_match(/^INJECTED$/, stderr)
@@ -123,17 +133,20 @@ class TestCommandLineCommitRange < Minitest::Test
 
   def test_revision_with_spaces_resolves
     stdout, stderr, status = run_bin(':/c2')
+
     assert_equal(0, status.exitstatus, stderr)
     assert_match(/added\.rb \(A\)/, stdout)
 
     `git commit --allow-empty -m "has spaces in it" --quiet`
     _stdout, stderr, status = run_bin(':/has spaces')
+
     assert_equal(0, status.exitstatus, stderr)
   end
 
   def test_outside_repo_reports_git_error
     Dir.mktmpdir('git_tree_norepo') do |dir|
       _stdout, stderr, status = Open3.capture3(@bin, 'HEAD', chdir: dir)
+
       assert_equal(1, status.exitstatus)
       assert_match(/not a git repository/i, stderr)
     end

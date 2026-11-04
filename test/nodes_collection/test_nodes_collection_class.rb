@@ -8,7 +8,7 @@ class TestNodesCollectionClass < Minitest::Test
   end
 
   def test_class?
-    assert(NodesCollection.is_a?(Class))
+    assert_kind_of(Class, NodesCollection)
   end
 
   def test_type_error_on_nil
@@ -20,6 +20,6 @@ class TestNodesCollectionClass < Minitest::Test
   end
 
   def test_initialize
-    assert(NodesCollection.new.is_a?(NodesCollection))
+    assert_kind_of(NodesCollection, NodesCollection.new)
   end
 end

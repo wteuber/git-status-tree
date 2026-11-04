@@ -31,6 +31,7 @@ class TestCommandLineCollapse < Minitest::Test
 
     # Test without collapse
     output_normal = `#{File.join(__dir__, '../../bin/git-status-tree')}`
+
     assert_match(/^\e\[1;34m\.\e\[0m$/, output_normal) # Root node with color codes
     assert_match(/└── \e\[1;34mdomains\e\[0m$/, output_normal)
     assert_match(/└── \e\[1;34mfoo\e\[0m$/, output_normal)
@@ -39,6 +40,7 @@ class TestCommandLineCollapse < Minitest::Test
 
     # Test with collapse
     output_collapsed = `#{File.join(__dir__, '../../bin/git-status-tree')} --collapse`
+
     assert_match(/^\e\[1;34m\.\e\[0m$/, output_collapsed) # Root node with color codes
     assert_match(%r{└── \e\[1;34mdomains/foo/bar/module\e\[0m$}, output_collapsed)
     # Now the files are included in the collapsed path

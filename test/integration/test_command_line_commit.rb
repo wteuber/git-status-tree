@@ -38,6 +38,7 @@ class TestCommandLineCommit < Minitest::Test
     `git commit -m "c2" --quiet`
 
     stdout, stderr, status = run_bin('HEAD')
+
     assert_equal(0, status.exitstatus)
     assert_equal('', stderr)
     assert_match(/keep\.rb \(M\)/, stdout)
@@ -58,6 +59,7 @@ class TestCommandLineCommit < Minitest::Test
     `git commit -m "c2" --quiet`
 
     stdout, _stderr, status = run_bin('HEAD')
+
     assert_equal(0, status.exitstatus)
     assert_match(/old\.rb -> renamed\.rb \(R\)/, stdout)
   end
@@ -70,6 +72,7 @@ class TestCommandLineCommit < Minitest::Test
     `git commit -m "root" --quiet`
 
     stdout, _stderr, status = run_bin('HEAD')
+
     assert_equal(0, status.exitstatus)
     assert_match(/a\.rb \(A\)/, stdout)
     assert_match(/b\.rb \(A\)/, stdout)
@@ -82,12 +85,14 @@ class TestCommandLineCommit < Minitest::Test
 
     # Comparing a commit to itself yields an empty diff.
     stdout, _stderr, status = run_bin('HEAD', 'HEAD')
+
     assert_equal(0, status.exitstatus)
     assert_equal("(no changes)\n", stdout)
   end
 
   def test_invalid_revision_exits_non_zero
     stdout, stderr, status = run_bin('definitely-not-a-rev')
+
     refute_equal(0, status.exitstatus)
     assert_equal('', stdout)
     assert_match(/fatal: bad revision 'definitely-not-a-rev'/, stderr)
@@ -95,6 +100,7 @@ class TestCommandLineCommit < Minitest::Test
 
   def test_three_args_rejected_with_usage
     stdout, stderr, status = run_bin('a', 'b', 'c')
+
     assert_equal(1, status.exitstatus)
     assert_equal('', stdout)
     assert_match(/accepts at most two commits/, stderr)

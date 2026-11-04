@@ -8,11 +8,11 @@ class TestVersion < Minitest::Test
   end
 
   def test_version_is_string
-    assert(GitStatusTree::VERSION.is_a?(String))
+    assert_kind_of(String, GitStatusTree::VERSION)
   end
 
   def test_version_not_empty
-    assert(!GitStatusTree::VERSION.empty?)
+    refute_empty(GitStatusTree::VERSION)
   end
 
   def test_version_format
@@ -20,11 +20,12 @@ class TestVersion < Minitest::Test
   end
 
   def test_version_file_exists
-    assert(File.exist?(GitStatusTree::VERSION_FILE))
+    assert_path_exists(GitStatusTree::VERSION_FILE)
   end
 
   def test_version_matches_file_content
     version_from_file = File.read(GitStatusTree::VERSION_FILE).strip
+
     assert_equal(version_from_file, GitStatusTree::VERSION)
   end
 end

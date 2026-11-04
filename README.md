@@ -177,7 +177,8 @@ ___
       so running the suite needs git 2.32+); they never read or change your
       global git config.
 4. Run RuboCop separately (optional)
-    * `bundle exec rubocop`
+    * `bundle exec rubocop` (with the `rubocop-minitest` and `rubocop-rake`
+      plugins, configured in `.rubocop.yml`)
     * To auto-correct offenses: `bundle exec rubocop -a`
 5. Run git-status-tree from repository
     * `./bin/git-status-tree`

@@ -14,35 +14,41 @@ class TestNodeCollapsing < Minitest::Test
 
   def test_collapsible_returns_false_for_file
     file = Node.new('file.txt', nil, 'M')
-    refute file.collapsible?
+
+    refute_predicate file, :collapsible?
   end
 
   def test_collapsible_returns_false_for_dir_with_no_children
     dir = Node.new('dir', NodesCollection.new([]))
-    refute dir.collapsible?
+
+    refute_predicate dir, :collapsible?
   end
 
   def test_collapsible_returns_false_for_dir_with_multiple_children
     child1 = Node.new('child1')
     child2 = Node.new('child2')
     dir = Node.new('dir', NodesCollection.new([child1, child2]))
-    refute dir.collapsible?
+
+    refute_predicate dir, :collapsible?
   end
 
   def test_collapsible_returns_true_for_dir_with_single_file_child
     file = Node.new('file.txt', nil, 'M')
     dir = Node.new('dir', NodesCollection.new([file]))
-    assert dir.collapsible?
+
+    assert_predicate dir, :collapsible?
   end
 
   def test_collapsible_returns_true_for_dir_with_single_dir_child
     child_dir = Node.new('child', NodesCollection.new([]))
     parent_dir = Node.new('parent', NodesCollection.new([child_dir]))
-    assert parent_dir.collapsible?
+
+    assert_predicate parent_dir, :collapsible?
   end
 
   def test_collapsed_path_returns_name_for_non_collapsible
     file = Node.new('file.txt', nil, 'M')
+
     assert_equal 'file.txt', file.collapsed_path
   end
 
@@ -67,6 +73,7 @@ class TestNodeCollapsing < Minitest::Test
 
   def test_deepest_collapsible_node_returns_self_for_non_collapsible
     file = Node.new('file.txt', nil, 'M')
+
     assert_equal file, file.deepest_collapsible_node
   end
 
@@ -92,13 +99,15 @@ class TestNodeCollapsing < Minitest::Test
   def test_collapsed_with_file_returns_true_when_ending_with_file
     file = Node.new('file.txt', nil, 'M')
     dir = Node.new('dir', NodesCollection.new([file]))
-    assert dir.collapsed_with_file?
+
+    assert_predicate dir, :collapsed_with_file?
   end
 
   def test_collapsed_with_file_returns_false_when_ending_with_dir
     child_dir = Node.new('child', NodesCollection.new([]))
     parent_dir = Node.new('parent', NodesCollection.new([child_dir]))
-    refute parent_dir.collapsed_with_file?
+
+    refute_predicate parent_dir, :collapsed_with_file?
   end
 
   def test_tree_output_without_collapse
@@ -240,6 +249,7 @@ class TestNodeCollapsing < Minitest::Test
 
     # When there's no directory in the path, it should just color the file
     expected = "\e[0;31msinglefile.txt (M)\e[0m"
+
     assert_equal expected, result
   end
 end

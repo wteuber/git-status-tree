@@ -8,7 +8,7 @@ class TestNodeClass < Minitest::Test
   end
 
   def test_class
-    assert(Node.is_a?(Class))
+    assert_kind_of(Class, Node)
   end
 
   def test_initialize_argument_error
@@ -20,6 +20,6 @@ class TestNodeClass < Minitest::Test
   end
 
   def test_initialize
-    assert(Node.new('test').is_a?(Node))
+    assert_kind_of(Node, Node.new('test'))
   end
 end

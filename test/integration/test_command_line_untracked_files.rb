@@ -23,6 +23,7 @@ class TestCommandLineUntrackedFiles < Minitest::Test
 
   def test_untracked_files_long_option
     output = `#{File.join(__dir__, '../../bin/git-status-tree')} --untracked-files`
+
     assert_match(/└── \e\[1;34msrc\e\[0m$/, output)
     assert_match(/main\.rb \(\?\)/, output)
     assert_match(/helper\.rb \(\?\)/, output)
@@ -30,6 +31,7 @@ class TestCommandLineUntrackedFiles < Minitest::Test
 
   def test_untracked_files_short_option
     output = `#{File.join(__dir__, '../../bin/git-status-tree')} -u`
+
     assert_match(/main\.rb \(\?\)/, output)
     assert_match(/helper\.rb \(\?\)/, output)
   end

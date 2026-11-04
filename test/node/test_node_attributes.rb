@@ -21,6 +21,7 @@ class TestNodeAttributes < Minitest::Test
 
   def test_node_children_dir
     collection = NodesCollection.new([])
+
     assert_equal(collection, Node.new('dir_name', collection).children)
   end
 end

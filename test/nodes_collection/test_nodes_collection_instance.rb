@@ -4,7 +4,7 @@ require_relative '../test_helper'
 
 class TestNodesCollectionInstance < Minitest::Test
   def test_new?
-    assert(NodesCollection.respond_to?(:new))
+    assert_respond_to(NodesCollection, :new)
   end
 
   def test_initialize_no_error
@@ -12,48 +12,55 @@ class TestNodesCollectionInstance < Minitest::Test
   end
 
   def test_initialize
-    assert(NodesCollection.new.is_a?(NodesCollection))
+    assert_kind_of(NodesCollection, NodesCollection.new)
   end
 
   def test_add_file_empty
     a = NodesCollection.create_from_string('x')
     b = NodesCollection.new
+
     assert_equal(['x'], (a + b).to_primitive)
   end
 
   def test_add_empty_file
     a = NodesCollection.new
     b = NodesCollection.create_from_string('x')
+
     assert_equal(['x'], (a + b).to_primitive)
   end
 
   def test_add_equal_files
     a = NodesCollection.create_from_string('x')
     b = NodesCollection.create_from_string('x')
+
     assert_equal(['x'], (a + b).to_primitive)
   end
 
   def test_add_different_files
     a = NodesCollection.create_from_string 'x'
     b = NodesCollection.create_from_string 'y'
+
     assert_equal(%w[x y], (a + b).to_primitive)
   end
 
   def test_add_different_files_inverse
     a = NodesCollection.create_from_string 'y'
     b = NodesCollection.create_from_string 'x'
+
     assert_equal(%w[x y], (a + b).to_primitive)
   end
 
   def test_add_file_and_dir
     a = NodesCollection.create_from_string 'x'
     b = NodesCollection.create_from_string 'y/z'
+
     assert_equal([{ 'y' => ['z'] }, 'x'], (a + b).to_primitive)
   end
 
   def test_add_dir_and_file
     a = NodesCollection.create_from_string 'y/z'
     b = NodesCollection.create_from_string 'x'
+
     assert_equal([{ 'y' => ['z'] }, 'x'], (a + b).to_primitive)
   end
 
@@ -72,10 +79,12 @@ class TestNodesCollectionInstance < Minitest::Test
   def test_valid_method
     node = Node.new('file.txt')
     collection = NodesCollection.new([node])
-    assert(collection.valid?)
+
+    assert_predicate(collection, :valid?)
 
     empty_collection = NodesCollection.new([])
-    assert(empty_collection.valid?)
+
+    assert_predicate(empty_collection, :valid?)
   end
 
   def test_new_from_nodes_array_rejects_non_nodes
@@ -91,6 +100,7 @@ class TestNodesCollectionInstance < Minitest::Test
     collection = NodesCollection.new([node1, node2])
 
     output = collection.to_tree_s(1, [])
+
     assert_match(/file1\.txt/, output)
     assert_match(/file2\.txt/, output)
   end
@@ -129,6 +139,7 @@ class TestNodesCollectionInstance < Minitest::Test
 
     assert_equal(3, result.nodes.length)
     names = result.nodes.map(&:name).sort
+
     assert_equal(['common.rb', 'unique1.rb', 'unique2.rb'], names)
   end
 
@@ -148,9 +159,11 @@ class TestNodesCollectionInstance < Minitest::Test
     collection2 = NodesCollection.new([Node.new('b.txt')])
 
     merged = collection1.merge_nodes_with(collection2)
+
     assert_equal(2, merged.length)
 
     result = collection1 + collection2
+
     assert_equal(2, result.nodes.length)
   end
 
@@ -182,6 +195,7 @@ class TestNodesCollectionInstance < Minitest::Test
     collection2 = NodesCollection.new([node2])
 
     result_collection = collection1 + collection2
+
     assert_equal(2, result_collection.nodes.length)
     assert_equal('file1.txt', result_collection.nodes[0].name)
     assert_equal('file2.txt', result_collection.nodes[1].name)
@@ -194,6 +208,7 @@ class TestNodesCollectionInstance < Minitest::Test
     collection = NodesCollection.new([file1, dir1, file2])
 
     files = collection.files
+
     assert_equal(2, files.length)
     assert(files.all?(&:file?))
   end
@@ -205,6 +220,7 @@ class TestNodesCollectionInstance < Minitest::Test
     collection = NodesCollection.new([file1, dir1, dir2])
 
     dirs = collection.dirs
+
     assert_equal(2, dirs.length)
     assert(dirs.all?(&:dir?))
   end
@@ -221,6 +237,7 @@ class TestNodesCollectionInstance < Minitest::Test
     assert_equal(3, result.length)
 
     merged = result.find { |n| n.name == 'same.txt' }
+
     assert_not_nil(merged)
   end
 

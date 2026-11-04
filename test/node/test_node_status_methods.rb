@@ -5,100 +5,127 @@ require_relative '../test_helper'
 class TestNodeStatusMethods < Minitest::Test
   def test_modified_status
     node = Node.new('file.txt', nil, 'M ')
-    assert(node.modified?)
+
+    assert_predicate(node, :modified?)
 
     node = Node.new('file.txt', nil, ' M')
-    assert(node.modified?)
+
+    assert_predicate(node, :modified?)
 
     node = Node.new('file.txt', nil, 'MM')
-    assert(node.modified?)
+
+    assert_predicate(node, :modified?)
 
     node = Node.new('file.txt', nil, 'A ')
-    assert(!node.modified?)
+
+    refute_predicate(node, :modified?)
   end
 
   def test_added_status
     node = Node.new('file.txt', nil, 'A ')
-    assert(node.added?)
+
+    assert_predicate(node, :added?)
 
     node = Node.new('file.txt', nil, 'AM')
-    assert(node.added?)
+
+    assert_predicate(node, :added?)
 
     node = Node.new('file.txt', nil, 'M ')
-    assert(!node.added?)
+
+    refute_predicate(node, :added?)
   end
 
   def test_deleted_status
     node = Node.new('file.txt', nil, 'D ')
-    assert(node.deleted?)
+
+    assert_predicate(node, :deleted?)
 
     node = Node.new('file.txt', nil, ' D')
-    assert(node.deleted?)
+
+    assert_predicate(node, :deleted?)
 
     node = Node.new('file.txt', nil, 'DD')
-    assert(node.deleted?)
+
+    assert_predicate(node, :deleted?)
 
     node = Node.new('file.txt', nil, 'M ')
-    assert(!node.deleted?)
+
+    refute_predicate(node, :deleted?)
   end
 
   def test_renamed_status
     node = Node.new('file.txt', nil, 'R ')
-    assert(node.renamed?)
+
+    assert_predicate(node, :renamed?)
 
     node = Node.new('file.txt', nil, 'RM')
-    assert(node.renamed?)
+
+    assert_predicate(node, :renamed?)
 
     node = Node.new('file.txt', nil, 'M ')
-    assert(!node.renamed?)
+
+    refute_predicate(node, :renamed?)
   end
 
   def test_copied_status
     node = Node.new('file.txt', nil, 'C ')
-    assert(node.copied?)
+
+    assert_predicate(node, :copied?)
 
     node = Node.new('file.txt', nil, 'CM')
-    assert(node.copied?)
+
+    assert_predicate(node, :copied?)
 
     node = Node.new('file.txt', nil, 'M ')
-    assert(!node.copied?)
+
+    refute_predicate(node, :copied?)
   end
 
   def test_unmerged_status
     node = Node.new('file.txt', nil, 'U ')
-    assert(node.unmerged?)
+
+    assert_predicate(node, :unmerged?)
 
     node = Node.new('file.txt', nil, 'UU')
-    assert(node.unmerged?)
+
+    assert_predicate(node, :unmerged?)
 
     node = Node.new('file.txt', nil, 'M ')
-    assert(!node.unmerged?)
+
+    refute_predicate(node, :unmerged?)
   end
 
   def test_new_status
     node = Node.new('file.txt', nil, '??')
-    assert(node.new?)
+
+    assert_predicate(node, :new?)
 
     node = Node.new('file.txt', nil, 'M ')
-    assert(!node.new?)
+
+    refute_predicate(node, :new?)
   end
 
   def test_staged_status
     node = Node.new('file.txt', nil, 'M+')
-    assert(node.staged?)
+
+    assert_predicate(node, :staged?)
 
     node = Node.new('file.txt', nil, 'A+')
-    assert(node.staged?)
+
+    assert_predicate(node, :staged?)
 
     node = Node.new('file.txt', nil, 'D+')
-    assert(node.staged?)
+
+    assert_predicate(node, :staged?)
   end
 
   def test_not_staged_status
     node = Node.new('file.txt', nil, 'M')
-    assert(!node.staged?)
+
+    refute_predicate(node, :staged?)
 
     node = Node.new('file.txt', nil, '?')
-    assert(!node.staged?)
+
+    refute_predicate(node, :staged?)
   end
 end

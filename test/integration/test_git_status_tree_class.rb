@@ -26,6 +26,7 @@ class TestGitStatusTreeClass < Minitest::Test
 
   def test_initialize_clean_repository
     tree = GitStatusTree.new
+
     assert_not_nil(tree)
     assert_equal([], tree.files)
     assert_equal([], tree.nodes)
@@ -34,11 +35,13 @@ class TestGitStatusTreeClass < Minitest::Test
 
   def test_to_s_clean_repository
     tree = GitStatusTree.new
+
     assert_equal('(working directory clean)', tree.to_s)
   end
 
   def test_no_commits_uses_status_mode
     GitStatusTree.new
+
     assert_equal(:status, Node.mode)
   end
 
@@ -47,6 +50,7 @@ class TestGitStatusTreeClass < Minitest::Test
     `git add .`
     `git commit -m "c1" --quiet`
     GitStatusTree.new(commits: ['HEAD'])
+
     assert_equal(:commit, Node.mode)
   end
 
@@ -55,6 +59,7 @@ class TestGitStatusTreeClass < Minitest::Test
     `git add .`
     `git commit -m "c1" --quiet`
     tree = GitStatusTree.new(commits: %w[HEAD HEAD])
+
     assert_nil(tree.tree)
     assert_equal('(no changes)', tree.to_s)
   end
@@ -68,6 +73,7 @@ class TestGitStatusTreeClass < Minitest::Test
     `git commit -m "c2" --quiet`
 
     tree = GitStatusTree.new(commits: ['HEAD~1..HEAD'])
+
     assert_match(/b\.rb \(A\)/, tree.to_s)
   end
 
@@ -90,6 +96,7 @@ class TestGitStatusTreeClass < Minitest::Test
   def test_initialize_with_untracked_file
     File.write('test.txt', 'content')
     tree = GitStatusTree.new
+
     assert_equal(1, tree.files.length)
     assert_equal(1, tree.nodes.length)
     assert_not_nil(tree.tree)
@@ -99,27 +106,32 @@ class TestGitStatusTreeClass < Minitest::Test
     File.write('test.txt', 'content')
     tree = GitStatusTree.new
     output = tree.to_s
+
     assert_match(/test\.txt/, output)
   end
 
   def test_initialize_with_custom_indent
     GitStatusTree.new(indent: 8)
+
     assert_equal(8, Node.indent)
   end
 
   def test_indent_minimum
     GitStatusTree.new(indent: 1)
+
     assert_equal(2, Node.indent)
   end
 
   def test_indent_maximum
     GitStatusTree.new(indent: 20)
+
     assert_equal(10, Node.indent)
   end
 
   def test_indent_from_git_config
     `git config --global status-tree.indent 6`
     GitStatusTree.new
+
     assert_equal(6, Node.indent)
   ensure
     `git config --global --unset status-tree.indent 2>/dev/null`
@@ -128,13 +140,15 @@ class TestGitStatusTreeClass < Minitest::Test
   def test_indent_default_when_no_config
     `git config --global --unset status-tree.indent 2>/dev/null`
     GitStatusTree.new
+
     assert_equal(4, Node.indent)
   end
 
   def test_collapse_from_git_config_true
     `git config --global status-tree.collapse true`
     GitStatusTree.new
-    assert_equal(true, Node.collapse_dirs)
+
+    assert_same(true, Node.collapse_dirs)
   ensure
     `git config --global --unset status-tree.collapse 2>/dev/null`
   end
@@ -142,7 +156,8 @@ class TestGitStatusTreeClass < Minitest::Test
   def test_collapse_from_git_config_false
     `git config --global status-tree.collapse false`
     GitStatusTree.new
-    assert_equal(false, Node.collapse_dirs)
+
+    assert_same(false, Node.collapse_dirs)
   ensure
     `git config --global --unset status-tree.collapse 2>/dev/null`
   end
@@ -150,13 +165,15 @@ class TestGitStatusTreeClass < Minitest::Test
   def test_collapse_default_when_no_config
     `git config --global --unset status-tree.collapse 2>/dev/null`
     GitStatusTree.new
-    assert_equal(false, Node.collapse_dirs)
+
+    assert_same(false, Node.collapse_dirs)
   end
 
   def test_collapse_command_line_overrides_config
     `git config --global status-tree.collapse false`
     GitStatusTree.new(collapse: true)
-    assert_equal(true, Node.collapse_dirs)
+
+    assert_same(true, Node.collapse_dirs)
   ensure
     `git config --global --unset status-tree.collapse 2>/dev/null`
   end
