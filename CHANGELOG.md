@@ -8,17 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Commit history views: `git tree <commit>` shows the files changed in a commit (vs. its first parent) and `git tree <c1> <c2>` (or the single-token `git tree <c1>..<c2>` range) shows the files that differ between two commits. Any revision git accepts works (SHA, `HEAD`, `HEAD~3`, branch, tag).
+- Commit history views: `git tree <commit>` shows the files changed in a commit (vs. its first parent, also for merge commits) and `git tree <c1> <c2>` (or the single-token `git tree <c1>..<c2>` range) shows the files that differ between two commits. Any revision git accepts works (SHA, `HEAD`, `HEAD~3`, branch, tag, `:/<message>`). Requires git 2.31+.
+- In a range, an omitted side defaults to `HEAD` (`<c1>..` means `<c1>..HEAD`).
 - Commit-mode entries render in a distinct cyan color (separate from the green=staged / red=dirty working-tree palette) with the git status letter (`A`/`M`/`D`/`R`/`T`); renames detected with `-M` display as `old -> new (R)`.
 - Root commits list every file as added; an empty commit diff prints `(no changes)`.
-- `-i/--indent` and `-c/--collapse` apply in all modes.
+- `-i/--indent` and `-c/--collapse` apply in all modes; `-u/--untracked-files` is ignored in commit views.
+- Invalid revisions, the unsupported symmetric-difference range `<c1>...<c2>`, and more than two commits fail with a clear error and exit status 1.
 
-### Notes
-- `-u/--untracked-files` is ignored for commit views (not applicable).
-- The symmetric-difference range `<c1>...<c2>` is rejected with a clear error; use `..`.
-- A single-commit view of a merge commit shows its changes vs. its first parent.
-- In a range, an omitted side defaults to `HEAD` (`<c1>..` means `<c1>..HEAD`).
-- Usage errors (invalid option, too many commits) now go to stderr.
+### Changed
+- Positional arguments are now interpreted as commits. Previously they were silently ignored, so `git tree <path>` showed the working-tree status; it now fails with `fatal: bad revision '<path>'`.
+- Usage errors (invalid option, too many commits) are printed to stderr instead of stdout.
+- The `-h` usage banner lists the commit forms.
 
 ## [3.6.0] - 2026-06-24
 
@@ -162,7 +162,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - "Try it" section in README documentation
 
-[Unreleased]: https://github.com/wteuber/git-status-tree/compare/v3.5.0...HEAD
+[Unreleased]: https://github.com/wteuber/git-status-tree/compare/v3.6.0...HEAD
+[3.6.0]: https://github.com/wteuber/git-status-tree/compare/v3.5.1...v3.6.0
+[3.5.1]: https://github.com/wteuber/git-status-tree/compare/v3.5.0...v3.5.1
 [3.5.0]: https://github.com/wteuber/git-status-tree/compare/v3.4.0...v3.5.0
 [3.4.0]: https://github.com/wteuber/git-status-tree/compare/v3.3.0...v3.4.0
 [3.3.0]: https://github.com/wteuber/git-status-tree/compare/v3.2.0...v3.3.0
