@@ -257,9 +257,10 @@ Note: the arg-count guard in §5.1 counts **positional tokens**, so a single
 - **Root commit** (no parent): `git diff-tree <root>` lists every file as added
   — acceptable and arguably useful. Document it.
 - **Merge commits**: `diff-tree` of a merge with `-r` and no `-m`/`-c` prints
-  nothing by default. For MVP, document that single-commit view of a merge may
-  be empty; users can pass the two parents explicitly. (Adding `-c`/combined
-  diff is out of scope.)
+  nothing by default, and plain `-m` diffs against every parent. Pass
+  `--diff-merges=first-parent` so a single merge commit shows its changes vs.
+  its first parent (a no-op for two-commit diffs). (Combined `-c`/`--cc` diff
+  is out of scope.)
 - **Paths with spaces / unicode / quotes**: `-z` keeps them literal, same as the
   status path already handled by `parse_status`. Reuse the UTF-8 forcing.
 - **Rename across directories**: node already supports `old -> new/path`

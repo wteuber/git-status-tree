@@ -40,10 +40,11 @@ class TestCommandLine < Minitest::Test
   end
 
   def test_invalid_option
-    stdout, _stderr, status = Open3.capture3(@executable, '--invalid-option')
+    stdout, stderr, status = Open3.capture3(@executable, '--invalid-option')
     assert_equal(1, status.exitstatus)
-    assert_match(/Error: invalid option: --invalid-option/, stdout)
-    assert_match(/Usage: git-status-tree \[options\]/, stdout)
+    assert_equal('', stdout)
+    assert_match(/Error: invalid option: --invalid-option/, stderr)
+    assert_match(/Usage: git-status-tree \[options\]/, stderr)
   end
 
   def test_multiple_options

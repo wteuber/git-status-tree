@@ -16,7 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 - `-u/--untracked-files` is ignored for commit views (not applicable).
 - The symmetric-difference range `<c1>...<c2>` is rejected with a clear error; use `..`.
-- A single-commit view of a merge commit may be empty (pass the two parents explicitly).
+- A single-commit view of a merge commit shows its changes vs. its first parent.
+- In a range, an omitted side defaults to `HEAD` (`<c1>..` means `<c1>..HEAD`).
+- Usage errors (invalid option, too many commits) now go to stderr.
 
 ## [3.6.0] - 2026-06-24
 
