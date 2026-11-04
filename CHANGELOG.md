@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.7.0] - 2026-11-04
+
 ### Added
 - Commit history views: `git tree <commit>` shows the files changed in a commit (vs. its first parent, also for merge commits) and `git tree <c1> <c2>` (or the single-token `git tree <c1>..<c2>` range) shows the files that differ between two commits. Any revision git accepts works (SHA, `HEAD`, `HEAD~3`, branch, tag, `:/<message>`). Requires git 2.31+.
 - In a range, an omitted side defaults to `HEAD` (`<c1>..` means `<c1>..HEAD`).
@@ -162,7 +164,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - "Try it" section in README documentation
 
-[Unreleased]: https://github.com/wteuber/git-status-tree/compare/v3.6.0...HEAD
+[Unreleased]: https://github.com/wteuber/git-status-tree/compare/v3.7.0...HEAD
+[3.7.0]: https://github.com/wteuber/git-status-tree/compare/v3.6.0...v3.7.0
 [3.6.0]: https://github.com/wteuber/git-status-tree/compare/v3.5.1...v3.6.0
 [3.5.1]: https://github.com/wteuber/git-status-tree/compare/v3.5.0...v3.5.1
 [3.5.0]: https://github.com/wteuber/git-status-tree/compare/v3.4.0...v3.5.0
