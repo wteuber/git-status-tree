@@ -28,6 +28,19 @@ $LOAD_PATH.unshift File.expand_path('../src', __dir__)
 require 'tmpdir'
 require 'fileutils'
 
+# Isolate the suite from the developer's git configuration. git-status-tree
+# reads (and some tests write and unset) the *global* status-tree.* settings,
+# so point HOME at a throwaway directory: the real ~/.gitconfig is never
+# touched, and output-format assertions don't depend on a custom indent.
+# Child processes (bin/git-status-tree, git) inherit this environment.
+TEST_HOME = Dir.mktmpdir('git-status-tree-home')
+ENV['HOME'] = TEST_HOME
+ENV.delete('XDG_CONFIG_HOME')
+ENV['GIT_CONFIG_NOSYSTEM'] = '1'
+# Not at_exit: that would run before minitest/autorun's own at_exit hook (LIFO)
+# and delete HOME before the suite starts.
+Minitest.after_run { FileUtils.rm_rf(TEST_HOME) }
+
 require 'bash_color'
 require 'node_collapsing'
 require 'node'

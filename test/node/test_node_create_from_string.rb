@@ -129,6 +129,17 @@ class TestNodeCreateFromString < Minitest::Test
     assert_equal 'R+', rename_node.status
   end
 
+  def test_create_from_string__file_copied_cross_directory
+    node = Node.create_from_string(' C src/a.rb -> lib/b.rb')
+    src_node = node.children.nodes.first
+    assert_equal 'src', src_node.name
+
+    copy_node = src_node.children.nodes.first
+    assert_equal 'a.rb -> lib/b.rb', copy_node.name
+    assert_nil copy_node.children
+    assert_equal 'C', copy_node.status
+  end
+
   private
 
   def setup_node_tracking_for_empty_filename

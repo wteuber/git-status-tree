@@ -26,7 +26,8 @@ class NodesCollection
   end
 
   def self.new_from_nodes_array(all_nodes)
-    raise msg unless all_nodes.all?(&Node.instances?)
+    msg = '"all_nodes" must only contain Nodes.'
+    raise NodesCollectionTypeError, msg unless all_nodes.all?(&Node.instances?)
 
     grouped_nodes = all_nodes.group_by(&:name)
     plain_nodes = plain_nodes(grouped_nodes)
@@ -178,6 +179,4 @@ class NodesCollection
 
     nodes + [other]
   end
-
-  def add_node(other); end
 end

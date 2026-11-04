@@ -1,11 +1,14 @@
 #!/bin/bash
+# Run at gem install time (see ext/git_tree/extconf.rb): registers the
+# "git tree" alias and writes default settings only where none are set yet,
+# so reinstalling or upgrading keeps the user's configuration.
 
 pushd `dirname $0` > /dev/null
 BIN_DIR=`pwd`
 popd > /dev/null
 
-git config --global status-tree.indent 4
-git config --global status-tree.collapse false
+git config --global --get status-tree.indent > /dev/null || git config --global status-tree.indent 4
+git config --global --get status-tree.collapse > /dev/null || git config --global status-tree.collapse false
 git config --global alias.tree "!exec $BIN_DIR/git-status-tree"
 echo '#############################'
 echo '# "git tree" has been added #'

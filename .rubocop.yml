@@ -5,27 +5,27 @@ AllCops:
   TargetRubyVersion: 2.6
   NewCops: enable
 
-# Allow longer test classes since they often contain many test methods.
-# The floor is also a little higher than it would otherwise be because the
-# 2.6-compatible classic `def ... end` predicates are more verbose than the
-# endless method definitions (Ruby 3.0+) they replaced.
+# Library classes may be up to 220 lines: the 2.6-compatible classic
+# `def ... end` predicates are more verbose than the endless method definitions
+# (Ruby 3.0+) they replaced. Test classes are exempt (many test methods).
 Metrics/ClassLength:
   Max: 220
   Exclude:
     - 'test/**/*'
 
-# Allow longer test methods since they may contain setup and assertions
+# Library methods may be up to 20 lines. Test methods are exempt (setup plus
+# assertions).
 Metrics/MethodLength:
   Max: 20
   Exclude:
     - 'test/**/*'
 
-# Test files often have many branches for different test cases
+# Test methods are exempt (many assignments and assertions).
 Metrics/AbcSize:
   Exclude:
     - 'test/**/*'
 
-# Test classes often have many public methods (test methods)
+# Test files are exempt (long blocks in test setup).
 Metrics/BlockLength:
   Exclude:
-    - 'test/**/*' 
+    - 'test/**/*'

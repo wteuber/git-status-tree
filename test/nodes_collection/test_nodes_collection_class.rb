@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../test_helper'
+
 class TestNodesCollectionClass < Minitest::Test
   def test_defined?
     assert_equal('constant', defined?(NodesCollection))
@@ -9,7 +11,7 @@ class TestNodesCollectionClass < Minitest::Test
     assert(NodesCollection.is_a?(Class))
   end
 
-  def test_argument_error
+  def test_type_error_on_nil
     assert_raise(NodesCollectionTypeError) { NodesCollection.new(nil) }
   end
 

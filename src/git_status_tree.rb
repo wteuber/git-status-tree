@@ -7,7 +7,8 @@ require File.join File.dirname(__FILE__), '../lib/nodes_collection'
 require File.join File.dirname(__FILE__), '../lib/bash_color'
 require File.join File.dirname(__FILE__), '../lib/version'
 
-# Main class for generating and displaying git status as a tree structure
+# Main class: renders the working-tree status (no commit args) or the files
+# changed in/between commits (one or two commit args) as a tree.
 class GitStatusTree
   # Raised when a positional commit argument is not a valid revision.
   class RevisionError < StandardError; end
@@ -169,7 +170,7 @@ class GitStatusTree
   end
 
   def indent(options)
-    indent = options[:indent] || config || 4
+    indent = options[:indent] || config_indent || 4
     indent = 2 if indent < 2
     indent = 10 if indent > 10
     indent
@@ -187,7 +188,7 @@ class GitStatusTree
     options[:untracked_files] ? ' --untracked-files=all' : ''
   end
 
-  def config
+  def config_indent
     config = `git config --global status-tree.indent`.strip
     config =~ /\A\d+\z/ ? config.to_i : nil
   end

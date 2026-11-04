@@ -78,11 +78,11 @@ class TestNodesCollectionInstance < Minitest::Test
     assert(empty_collection.valid?)
   end
 
-  def test_add_node_method
-    # This method appears to be empty/not implemented
-    collection = NodesCollection.new
-    result = collection.add_node(Node.new('test.txt'))
-    assert_nil(result)
+  def test_new_from_nodes_array_rejects_non_nodes
+    error = assert_raises(NodesCollectionTypeError) do
+      NodesCollection.new_from_nodes_array([Node.new('a.txt'), 'b.txt'])
+    end
+    assert_equal('"all_nodes" must only contain Nodes.', error.message)
   end
 
   def test_to_tree_s_with_depth
@@ -217,7 +217,8 @@ class TestNodesCollectionInstance < Minitest::Test
     file3 = Node.new('same.txt', nil, 'A+')
 
     result = collection.merge_nodes_with_node(file3)
-    assert_equal(3, result.length) # Should have merged node + different.txt + merged same.txt
+    # The original same.txt and different.txt, plus the merged same.txt.
+    assert_equal(3, result.length)
 
     merged = result.find { |n| n.name == 'same.txt' }
     assert_not_nil(merged)

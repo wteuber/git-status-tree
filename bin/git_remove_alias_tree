@@ -1,4 +1,6 @@
 #!/bin/bash
+# Run before the gem is uninstalled (see lib/rubygems_plugin.rb): removes the
+# "git tree" alias and all status-tree.* settings.
 
 git config --global --unset alias.tree
 git config --global --remove-section status-tree
