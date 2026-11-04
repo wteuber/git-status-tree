@@ -56,7 +56,7 @@ The two-commit form may also be written as a single `A..B` token (see §8).
   `git status --porcelain -z`, splits it into **porcelain entry strings**, and
   maps each through `Node.create_from_string`.
 - A porcelain entry string has the shape `XY<space>path` (two status columns, a
-  space, then the path). Renames are normalized to `XY<orig> -> <dest>`.
+  space, then the path). Renames are normalized to `XY <orig> -> <dest>`.
 - [lib/node.rb](../../lib/node.rb) `Node.status` reads `gs[0]`/`gs[1]` and the
   path from `gs[3..]`. When the second column is a space it marks the entry
   *staged* (`"#{c0}+"`, rendered **green**); otherwise it renders **red**.
@@ -215,33 +215,30 @@ Implementation:
 
    `GitStatusTree#initialize` sets `Node.mode = commits.empty? ? :status : :commit`.
 
-2. Add a cyan constant to [lib/bash_color.rb](../../lib/bash_color.rb) (e.g.
-   `C = "\e[0;36m"`; verify the exact escape against the existing style).
+2. Use the existing cyan constant `BashColor::C` (`"\033[0;36m"`) from
+   [lib/bash_color.rb](../../lib/bash_color.rb).
 
-3. Branch in `Node#color_name`'s file path:
+3. Pick the color in one place, `Node#status_color`, shared by the normal and
+   the collapsed-file renderers:
 
    ```ruby
-   if self.class.mode == :commit
-     color_name += BashColor::C                 # cyan, no '+'
-   elsif staged?
-     color_name += BashColor::G
-   else
-     color_name += BashColor::R
+   def status_color(status)
+     return BashColor::C if self.class.mode == :commit   # cyan, no '+'
+
+     staged_status?(status) ? BashColor::G : BashColor::R
    end
-   color_name += "#{name} (#{status})"
    ```
 
-   In commit mode the porcelain Y column is a space, so `Node.status` would
-   normally append `+`. Suppress it for commit mode — either keep the existing
-   `status` value but strip a trailing `+` for display when `mode == :commit`,
-   or have `porcelain_xy` (see §5.3) encode the letter so no `+` is produced.
-   Pick whichever keeps `status`-mode output byte-identical.
+   `Node.status` appends `+` only when the porcelain Y column is a space. The
+   diff-tree translator therefore puts the status letter in the **Y** column
+   (`" M path"`, X is a space), so commit-mode entries never get a `+` and
+   status-mode output stays byte-identical.
 
 Directory nodes keep their existing emphasis color in both modes.
 
 Status-letter → meaning shown to the user (unchanged letters): `A` added,
 `M` modified, `D` deleted, `R` renamed, `T` type-changed. (`C`/copied won't
-appear since `-C` is off, but the parser tolerates it — see §5.3.)
+appear since `-C` is off, but copy entries are parsed and rendered like renames.)
 
 ## 7. Revision validation & errors
 

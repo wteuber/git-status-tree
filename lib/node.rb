@@ -32,9 +32,9 @@ class Node
   end
 
   def self.create_from_string(gs_porcelain)
-    msg = '"str_node" must be String.'
+    msg = '"gs_porcelain" must be a String.'
     raise NodeTypeError, msg unless gs_porcelain.is_a? String
-    raise NodeNameError, '"str_node" too short.' if gs_porcelain.length < 4
+    raise NodeNameError, '"gs_porcelain" too short.' if gs_porcelain.length < 4
 
     node_from_gs(gs_porcelain)
   end
@@ -43,18 +43,28 @@ class Node
     ->(node) { node.is_a?(Node) }
   end
 
+  # True when a porcelain XY status marks a rename or copy, in either column
+  # ("R ", "RM", " R", "C ", "CM", ...). Such entries carry "<orig> -> <dest>".
+  # Checks the raw columns, not the displayed status, which shows only Y
+  # when Y is set (e.g. "RM" displays as "M").
+  def self.rename_or_copy?(xy_status)
+    xy_status.include?('R') || xy_status.include?('C')
+  end
+
   def self.node_from_gs(gs_porcelain)
     status = status(gs_porcelain)
 
-    # Handle renamed files specially
-    if status.include?('R')
+    # Renames and copies carry "<orig> -> <dest>" and are placed under the
+    # original path; everything else is a single path.
+    if rename_or_copy?(gs_porcelain[0, 2])
       node_from_renamed_file(gs_porcelain, status)
     else
-      # Original logic for non-renamed files
       node_from_regular_file(gs_porcelain, status)
     end
   end
+  private_class_method :node_from_gs
 
+  # Builds the node for a rename or copy entry ("<orig> -> <dest>").
   def self.node_from_renamed_file(gs_porcelain, status)
     paths_part = gs_porcelain[3..]
     return node_from_regular_file(gs_porcelain, status) unless paths_part.include?(' -> ')
@@ -113,8 +123,8 @@ class Node
   end
   private_class_method :node_from_regular_file
 
-  private_class_method :node_from_gs
-
+  # Porcelain "XY": an entry whose Y column is a space is fully staged and is
+  # shown as "<X>+"; otherwise Y (the worktree/commit status letter) is shown.
   def self.status(gs_porcelain)
     status = "#{gs_porcelain[0]}+" if gs_porcelain[1] == ' '
     status = gs_porcelain[1] unless gs_porcelain[1] == ' '

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../test_helper'
+
 class TestNodeAttributes < Minitest::Test
   def test_node_name_file
     assert_equal('file.txt', Node.new('file.txt').name)

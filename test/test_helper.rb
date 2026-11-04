@@ -28,6 +28,20 @@ $LOAD_PATH.unshift File.expand_path('../src', __dir__)
 require 'tmpdir'
 require 'fileutils'
 
+# Isolate the suite from the developer's git configuration. git-status-tree
+# reads (and some tests write and unset) the *global* status-tree.* settings,
+# so point git's global config at a throwaway file (GIT_CONFIG_GLOBAL, git
+# 2.32+) and skip the system config: the real global config is never touched,
+# and output-format assertions don't depend on a custom indent. Only git config
+# is redirected; HOME (gems, Bundler settings) is left alone. Child processes
+# (bin/git-status-tree, git) inherit this environment.
+TEST_GIT_CONFIG_DIR = Dir.mktmpdir('git-status-tree-gitconfig')
+ENV['GIT_CONFIG_GLOBAL'] = File.join(TEST_GIT_CONFIG_DIR, 'gitconfig')
+ENV['GIT_CONFIG_NOSYSTEM'] = '1'
+# Not at_exit: that would run before minitest/autorun's own at_exit hook (LIFO)
+# and delete the directory before the suite starts.
+Minitest.after_run { FileUtils.rm_rf(TEST_GIT_CONFIG_DIR) }
+
 require 'bash_color'
 require 'node_collapsing'
 require 'node'

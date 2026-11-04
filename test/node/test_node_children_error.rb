@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+require_relative '../test_helper'
+
 class TestNodeChildrenError < Minitest::Test
   def test_no_node_children_error
     assert_nothing_raised(NodeChildrenError) { Node.new('valid') }
   end
 
-  def test_node_children_error_on_nil
+  def test_no_node_children_error_on_nil
     assert_nothing_raised(NodeChildrenError) { Node.new('valid', nil) }
   end
 
@@ -13,7 +15,7 @@ class TestNodeChildrenError < Minitest::Test
     assert_nothing_raised(NodeChildrenError) { Node.new('valid', NodesCollection.new) }
   end
 
-  def test_no_node_children_error_on_string
+  def test_node_children_error_on_string
     assert_raise(NodeChildrenError) { Node.new('valid', '') }
   end
 

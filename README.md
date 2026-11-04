@@ -9,7 +9,9 @@ and files. Run `git tree` in the command line to list all files in your git repo
 untracked (?), have been added (A), modified (M), deleted (D), or renamed (R). The colored output  
 shows whether a file has been added/staged (green)(+) or not (red). The current status  
 of each file is appended to it. For renamed files, the tree structure shows the original  
-location with an arrow pointing to the new name or path.
+location with an arrow pointing to the new name or path. Run `git tree <commit>` or  
+`git tree <c1> <c2>` to see the files changed in or between commits the same way  
+(see [Inspecting commits](#inspecting-commits)).
 
 See [CHANGELOG.md](CHANGELOG.md) for a list of changes between versions.
 ___
@@ -19,6 +21,10 @@ Install git-status-tree by running:
 ```
 gem install git-status-tree
 ```
+
+Installing the gem adds the `git tree` alias to your global git config and sets
+the `status-tree.*` defaults (see [Configuration](#configuration)) unless you
+have already set them.
 
 ## Usage
 Start using git-status-tree in your terminal by running:
@@ -55,18 +61,23 @@ Notes:
 
 ## Options
 ```
--i, --indent INDENT    Set indentation (2-10 spaces)
--c, --collapse         Collapse directories containing only another directory
--u, --untracked-files  Show untracked files in new directories
--v, --version          Show version
--h, --help             Show help message
+Usage: git-status-tree [options] [<commit> [<commit>] | <commit>..<commit>]
+    -i, --indent INDENT              Set indentation (2-10 spaces)
+    -c, --collapse                   Collapse directories containing only another directory
+    -u, --untracked-files            Show untracked files in new directories
+    -v, --version                    Show version
+    -h, --help                       Show this help message
 ```
+
+Usage errors (an invalid option, more than two commits, a bad revision) are
+printed to stderr and exit with status 1.
 
 **Note:** Due to how git handles aliases, when using `git tree --help`, git will show the alias expansion instead of the help message. Use `git tree -h` to see the help message.
 
 ## Compatibility
 git-status-tree supports:
-* Git (http://git-scm.com): version 1.8+
+* Git (http://git-scm.com): version 1.8+ for the working-tree view; 2.31+ for
+  the commit views (`git tree <commit> [<commit>]`)
 * Ruby (http://www.ruby-lang.org): version 2.6+
 
 Ruby 2.6 is the support floor because it is the stock Ruby shipped with macOS,
@@ -77,12 +88,15 @@ before they reach a user on system Ruby. Newer Ruby versions (3.x, 4.x) are
 fully supported as well.
 
 ## Configuration
-Set the indentation as you like, default is 4.
+Settings are read from your **global** git config only.
+
+Set the indentation as you like (2-10), default is 4. The `-i` option overrides it.
 ```
 git config --global status-tree.indent <indent>
 ```
 
-Set whether to collapse directories by default, default is false.
+Set whether to collapse directories by default, default is false. The `-c`
+option turns collapsing on for a single run.
 ```
 git config --global status-tree.collapse <true|false>
 ```
@@ -133,24 +147,35 @@ git clean -xdf
 ```
 gem uninstall git-status-tree
 ```
+
+Uninstalling removes the `git tree` alias and all `status-tree.*` settings from
+your global git config.
 ___
 ## Development
 
 1. Clone this repository
    * `git clone https://github.com/wteuber/git-status-tree.git`
    * `cd git-status-tree`
-2. Install dependencies
-    * `bundle install`
+2. Install development dependencies (Rake, RuboCop)
+    * `bundle install` (the locked Bundler 4 and RuboCop need a modern Ruby;
+      `.ruby-version` pins the Ruby used for development)
 3. Run tests
     * `rake` - Run all tests and RuboCop checks (default)
     * `rake test` - Run all tests
     * `rake test:node` - Run Node class tests only
     * `rake test:nodes_collection` - Run NodesCollection tests only
-    * `rake test:integration` - Run integration tests
-    * `ruby test/coverage.rb` - Run the suite with the coverage gate (what CI runs)
+    * `rake test:git_status_tree` - Run GitStatusTree unit tests only
+    * `rake test:integration` - Run integration tests only
+    * `rake test:utilities` - Run version tests only
+    * `ruby test/coverage.rb` (or `rake coverage`) - Run the suite with the
+      coverage gate (what CI runs)
     * The suite runs on minitest (bundled with Ruby) and measures coverage with
-      the standard library's `coverage` extension, so it needs no gem install and
-      runs on every supported Ruby (2.6+). Tests require 100% library coverage.
+      the standard library's `coverage` extension, so `ruby test/coverage.rb`
+      needs no gems or Bundler and runs on every supported Ruby (2.6+). Tests
+      require 100% library coverage.
+    * Tests point git's global config at a temporary file (`GIT_CONFIG_GLOBAL`,
+      so running the suite needs git 2.32+); they never read or change your
+      global git config.
 4. Run RuboCop separately (optional)
     * `bundle exec rubocop`
     * To auto-correct offenses: `bundle exec rubocop -a`

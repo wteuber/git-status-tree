@@ -12,8 +12,8 @@ class TestParseDiffTree < Minitest::Test
   end
 
   def parse(raw)
-    # Backtick output (the real input) is never frozen; dup so the in-place
-    # force_encoding doesn't choke on these frozen string literals.
+    # git's captured output (the real input) is never frozen; dup so the
+    # in-place force_encoding doesn't choke on these frozen string literals.
     @tree.send(:parse_diff_tree, raw.dup)
   end
 
@@ -50,7 +50,7 @@ class TestParseDiffTree < Minitest::Test
   end
 
   def test_skips_empty_tokens
-    # A leading/trailing NUL produces empty tokens that must be ignored.
-    assert_equal([' M a.rb'], parse("M\0a.rb\0"))
+    # A leading NUL produces an empty first token that must be ignored.
+    assert_equal([' M a.rb'], parse("\0M\0a.rb\0"))
   end
 end

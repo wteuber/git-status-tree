@@ -170,8 +170,9 @@ class TestGitStatusTreeClass < Minitest::Test
     tree = GitStatusTree.new
     output = tree.to_s
 
+    # The untracked directory is listed as a single "src" entry (its files
+    # aren't shown individually); the staged README.md is listed too.
     assert_match(/src/, output)
-    # When directory is untracked, individual files inside aren't shown
     assert_match(/README\.md/, output)
   end
 
@@ -265,7 +266,7 @@ class TestGitStatusTreeClass < Minitest::Test
     assert_match(/How To/, output)
     assert_match(/Commands\.md \(M\)/, output)
     assert_no_match(/"/, output)
-    # Exactly two nodes: the "How To" directory and the file inside it.
+    # Exactly one status entry: the path is not split into two.
     assert_equal(1, tree.files.length)
   end
 

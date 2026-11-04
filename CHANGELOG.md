@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Copy entries (`C`), and renames or copies that are also modified in the worktree (`RM`, `CM`), now render like renames (`old -> new`, placed under the original path) instead of as a broken path or a fake directory named after the arrow.
+- `NodesCollection.new_from_nodes_array` raises `NodesCollectionTypeError` for non-Node input instead of a `NameError`.
+- Reinstalling or upgrading the gem no longer resets `status-tree.indent` and `status-tree.collapse` to their defaults; the install script only sets them when they are unset.
+- `rake test:node` and `rake test:nodes_collection` work on their own (every test file now loads the test helper).
+- The test suite no longer reads, writes or unsets the developer's global `status-tree.*` git config (it points `GIT_CONFIG_GLOBAL` at a temporary file).
+
+### Changed
+- Gemspec license identifier `GPL-2.0` updated to the SPDX identifier `GPL-2.0-only`; summary and description mention the commit views.
+- Added `rake test:git_status_tree` and `rake test:utilities`.
+
+### Removed
+- `NodesCollection#add_node`, an unused method that did nothing.
+
 ## [3.7.0] - 2026-11-04
 
 ### Added
@@ -54,7 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `.rubocop.yml` `TargetRubyVersion` to 3.4
 - Updated CI matrix and README to Ruby 3.4
 
-## [3.4.0] - 2025-07-23
+## [3.4.0] - 2025-07-03
 
 ### Added
 - Default collapse setting configurable via `git config --global status-tree.collapse <true|false>`
@@ -92,7 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed `git tree -v` showing "unknown" instead of the actual version number
 
-## [3.1.0] - 2025-01-16
+## [3.1.0] - 2025-06-25
 
 ### Added
 - Proper support for renamed/moved files in git status
@@ -129,9 +143,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **BREAKING**: Minimum Ruby version in gemspec raised from 2.7 to 3.3
 - Updated `git-status-tree.gemspec` to dynamically read version from VERSION file
 - Fixed all RuboCop offenses for code style compliance
-
-### Removed
-- `.gitignore` file (was only excluding Gemfile.lock, now tracking dependencies)
+- `.gitignore` no longer ignores `Gemfile.lock` (now tracked); it ignores build artifacts, temporary files and IDE files instead
 
 ## [2.0.0] - 2023-02-06
 

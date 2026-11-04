@@ -23,7 +23,9 @@ namespace :test do
   {
     node: 'test/node/test_*.rb',
     nodes_collection: 'test/nodes_collection/test_*.rb',
-    integration: 'test/integration/test_*.rb'
+    git_status_tree: 'test/git_status_tree/test_*.rb',
+    integration: 'test/integration/test_*.rb',
+    utilities: 'test/utilities/test_*.rb'
   }.each do |name, glob|
     desc "Run #{name} tests"
     Rake::TestTask.new(name) do |t|
