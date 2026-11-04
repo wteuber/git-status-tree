@@ -156,8 +156,15 @@ ___
     * To auto-correct offenses: `bundle exec rubocop -a`
 5. Run git-status-tree from repository
     * `./bin/git-status-tree`
-6. Build and install local gem
+6. Record notable changes in [CHANGELOG.md](CHANGELOG.md)
+    * The changelog follows [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/)
+      and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+    * Add entries under `## [Unreleased]`, grouped by type: `Added`, `Changed`,
+      `Deprecated`, `Removed`, `Fixed`, `Security`.
+    * On release, rename `[Unreleased]` to `[x.y.z] - YYYY-MM-DD` and update the
+      compare links at the bottom of the file.
+7. Build and install local gem
    * `gem build git-status-tree.gemspec`
    * `gem install git-status-tree-3.6.0.gem`
-7. Push new version to rubygems (maintainers only)
+8. Push new version to rubygems (maintainers only)
    * `gem push git-status-tree-3.6.0.gem`
