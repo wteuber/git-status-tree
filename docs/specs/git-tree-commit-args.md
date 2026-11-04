@@ -2,6 +2,12 @@
 
 Tracking issue: [#6](https://github.com/wteuber/git-status-tree/issues/6)
 
+**Status:** Implemented in [v3.7.0](https://github.com/wteuber/git-status-tree/releases/tag/v3.7.0)
+(PR [#18](https://github.com/wteuber/git-status-tree/pull/18)). Snippets show
+the design; the CLI (§5.1), git invocation (§5.2 `diff_tree_output`) and
+revision validation (§7) match the shipped code. `src/git_status_tree.rb` is the
+source of truth.
+
 ## 1. Summary
 
 Today `git tree` only visualizes the **working tree status** (`git status
@@ -37,8 +43,10 @@ The two-commit form may also be written as a single `A..B` token (see §8).
 **Non-goals**
 - No diff *content* (hunks/line changes) — only the name-status tree.
 - `-u/--untracked-files` is meaningless for commits and is ignored in commit modes.
-- No commit-range syntax beyond two positional args (`A..B`, `A...B` are out of
-  scope for now; see §8).
+- No symmetric-difference range: `A...B` is rejected (`A..B` is supported; see
+  §7, §8).
+- No combined diff (`-c`/`--cc`) for merge commits; they are shown vs. their
+  first parent (see §8).
 
 ## 3. Current architecture (relevant pieces)
 
@@ -89,7 +97,9 @@ After `parser.parse!`, the residual `ARGV` holds the positional commit args
 begin
   parser.parse!
 rescue OptionParser::InvalidOption => e
-  # unchanged
+  warn "Error: #{e.message}"   # usage errors go to stderr
+  warn parser
+  exit 1
 end
 
 if ARGV.length > 2
@@ -99,8 +109,16 @@ if ARGV.length > 2
 end
 options[:commits] = ARGV.dup
 
-puts GitStatusTree.new(options)
+begin
+  puts GitStatusTree.new(options)
+rescue GitStatusTree::RevisionError => e
+  warn e.message
+  exit 1
+end
 ```
+
+The `-h` banner lists the commit forms:
+`Usage: git-status-tree [options] [<commit> [<commit>] | <commit>..<commit>]`.
 
 ### 5.2 Source selection — `GitStatusTree#initialize`
 
@@ -127,8 +145,20 @@ def diff_tree_output(commits)
   refs = validate_revs!(commits)                # see §7
   # -M enables rename detection (no -C: copy detection is off by default in git
   # and is slower/noisier), -r recurses into subtrees, --no-commit-id suppresses
-  # the leading SHA line, -z gives unambiguous paths.
-  `git diff-tree --no-commit-id --name-status -M -r -z #{refs.join(' ')}`
+  # the leading SHA line, --root lists every file as added for a root commit,
+  # -z gives unambiguous paths, --diff-merges=first-parent handles merges (§8).
+  run_git!('diff-tree', '--no-commit-id', '--name-status', '-M', '-r', '--root',
+           '--diff-merges=first-parent', '-z', *refs)
+end
+
+# argv array via Open3: no shell, so revisions are never word-split, globbed or
+# interpreted. A failing git command raises with git's own stderr instead of
+# silently rendering "(no changes)".
+def run_git!(*args)
+  stdout, stderr, status = Open3.capture3('git', *args)
+  raise RevisionError, stderr.strip unless status.success?
+
+  stdout
 end
 ```
 
@@ -220,27 +250,40 @@ diff-tree, accepting both `git tree A B` and the single-token `git tree A..B`:
 
 ```ruby
 def validate_revs!(commits)
-  # Expand a single "A..B" token into two endpoints. Reject "A...B": diff-tree
-  # does not honor symmetric-difference semantics and silently returns nothing.
+  # Expand a single "A..B" token into two endpoints; an omitted side defaults
+  # to HEAD, as in git. Reject "A...B": diff-tree does not honor
+  # symmetric-difference semantics and silently returns nothing.
   if commits.length == 1 && commits[0].include?('..')
-    raise "fatal: '#{commits[0]}': '...' range is not supported; use 'A..B'" \
-      if commits[0].include?('...')
-    commits = commits[0].split('..', 2)
+    if commits[0].include?('...')
+      raise RevisionError, "fatal: '#{commits[0]}': '...' range is not supported; use 'A..B'"
+    end
+
+    commits = commits[0].split('..', 2).map { |rev| rev.empty? ? 'HEAD' : rev }
   end
   commits.map { |rev| validate_rev!(rev) }
 end
 
+# Resolve, then peel to a commit in a second step: appending ^{commit} to the
+# user's text would break ":/message" revisions.
 def validate_rev!(rev)
-  sha = `git rev-parse --verify --quiet #{rev}^{commit} 2>/dev/null`.strip
-  raise "fatal: bad revision '#{rev}'" if sha.empty?
-  sha
+  object = rev_parse(rev, rev)
+  rev_parse("#{object}^{commit}", rev)
+end
+
+def rev_parse(spec, rev)
+  stdout, stderr, status = Open3.capture3('git', 'rev-parse', '--verify', '--quiet', '--end-of-options', spec)
+  sha = stdout.strip
+  return sha if status.success? && !sha.empty?
+
+  raise RevisionError, stderr.strip.empty? ? "fatal: bad revision '#{rev}'" : stderr.strip
 end
 ```
 
-- Invalid ref → print `fatal: bad revision '<rev>'` to stderr, exit non-zero.
-- `A...B` → print the symmetric-difference error above, exit non-zero.
-- Not in a git repo → existing behavior (git prints its own error) is acceptable;
-  optionally detect and message uniformly.
+- Invalid ref → print `fatal: bad revision '<rev>'` to stderr, exit 1.
+- `A...B` → print the symmetric-difference error above, exit 1.
+- `A..` / `..B` → the omitted side is `HEAD`.
+- Not in a git repo (or any other git failure) → git's own error message is
+  printed to stderr, exit 1.
 - More than two positional args → handled in CLI (§5.1), exit 1 with usage.
 
 Note: the arg-count guard in §5.1 counts **positional tokens**, so a single
@@ -249,7 +292,8 @@ Note: the arg-count guard in §5.1 counts **positional tokens**, so a single
 ## 8. Edge cases
 
 - **Range token** (`git tree A..B`): expanded to two endpoints in
-  `validate_revs!` (§7); `A...B` is rejected. `A..B C` (token + extra arg) is
+  `validate_revs!` (§7), with an omitted side defaulting to `HEAD`; `A...B` is
+  rejected. `A..B C` (token + extra arg) is
   rejected by the §5.1 count guard.
 - **Empty diff** (commit with no changes, or two identical trees): `@tree` is
   `nil`. `#to_s` should be mode-aware: keep `(working directory clean)` for
@@ -276,11 +320,14 @@ Add integration tests under `test/integration/` mirroring existing ones
   - single commit shows that commit's changes (A/M/D) in tree form;
   - rename within a commit shows `old -> new (R…)`;
   - root commit lists all files as added;
-  - empty/merge commit → "no changes" / empty handling;
+  - empty commit → `(no changes)`;
+  - merge commit → changes vs. its first parent;
+  - shell metacharacters, `:/<message>` revisions, outside a git repo;
   - invalid revision → non-zero exit + stderr message;
   - three+ args → exit 1 + usage.
 - `test_command_line_commit_range.rb`
-  - `c1 c2` shows the symmetric diff;
+  - `c1 c2` shows the files that differ between them;
+  - `A..B`, `A..` and `..B` range tokens;
   - reversed order flips add/delete;
   - rename across dirs renders arrow with path;
   - `-i`/`-c` options still apply in range mode.
@@ -290,22 +337,23 @@ Unit tests:
   the `-z` token walk: regular entry, rename triplet, copy triplet, similarity
   score stripping, empty stream, multibyte paths.
 
-Keep coverage green (`rake`), including RuboCop (`.rubocop.yml`) and SimpleCov.
+Keep `rake` green (tests + RuboCop) and library coverage at 100%
+(`ruby test/coverage.rb`, the stdlib coverage gate CI runs).
 
 ## 10. Documentation updates
 
 - **README.md** – new "Inspecting commits" section with the three invocations
-  and example output; note `-u` is ignored for commits and the merge-commit
-  caveat.
+  and example output; note `-u` is ignored for commits and how merge commits
+  and open-ended ranges behave.
 - **CHANGELOG.md** – add an entry under a new minor version (history inspection
-  is a feature → bump minor, e.g. `3.6.0`); update `VERSION`.
+  is a feature → bump minor; shipped as `3.7.0`); update `VERSION`.
 - **`git tree --help`** – the existing alias caveat (`git tree -h`) still applies.
 
 ## 11. Implementation checklist
 
 1. CLI: capture positionals into `options[:commits]`, guard arg count.
-2. `GitStatusTree`: add `source_files`, `diff_tree_output`, `parse_diff_tree`,
-   `validate_rev!`.
+2. `GitStatusTree`: add `source_files`, `diff_tree_output`, `run_git!`,
+   `parse_diff_tree`, `validate_revs!`, `validate_rev!`.
 3. Rendering: add `Node.mode`, cyan `BashColor` constant, adjust `color_name`
    (cyan, no `+` for commit mode); keep status-mode output byte-identical.
 4. Mode-aware empty message in `#to_s` (`(no changes)` for commit mode).
