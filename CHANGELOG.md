@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- RuboCop plugins `rubocop-minitest` (0.40.0) and `rubocop-rake` (0.7.1), enabled in `.rubocop.yml` and installed in the CI lint job; the test suite now follows the Minitest style cops (e.g. `assert_predicate`, `refute`, `assert_instance_of`).
+- RuboCop plugins `rubocop-minitest` (0.40.0) and `rubocop-rake` (0.7.1), enabled in `.rubocop.yml`; the test suite now follows the Minitest style cops (e.g. `assert_predicate`, `refute`, `assert_instance_of`).
 
 ### Changed
 - Gemspec license identifier `GPL-2.0` updated to the SPDX identifier `GPL-2.0-only`; summary and description mention the commit views.
 - Added `rake test:git_status_tree` and `rake test:utilities`.
-- RuboCop and its plugins are pinned exactly in the `Gemfile` (`rubocop` 1.77.0), matching the versions CI installs.
+- RuboCop and its plugins are pinned exactly in the `Gemfile` (`rubocop` 1.77.0), the single source of truth: the CI lint job now installs them from `Gemfile.lock` (`bundler-cache`) and runs `bundle exec rubocop` instead of installing pinned versions with `gem install`.
 
 ### Removed
 - `NodesCollection#add_node`, an unused method that did nothing.

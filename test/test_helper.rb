@@ -19,11 +19,16 @@ module Minitest
       yield
       pass
     end
+  end
+end
 
-    # assert_path_exists (preferred by rubocop-minitest) is missing from the
-    # minitest bundled with Ruby 2.6; define it there. The cops are disabled
-    # because this IS the fallback implementation (their autocorrection would
-    # make it call itself).
+# Old-minitest fallbacks: assertions that newer minitest provides (and that
+# rubocop-minitest prefers) but the minitest bundled with Ruby 2.6 lacks.
+# Remove this section when Ruby 2.6 support is dropped.
+module Minitest
+  class Test
+    # The cops are disabled because this IS the fallback implementation (their
+    # autocorrection would make it call itself).
     unless method_defined?(:assert_path_exists)
       def assert_path_exists(path, msg = nil)
         # rubocop:disable Minitest/AssertPathExists, Minitest/AssertWithExpectedArgument

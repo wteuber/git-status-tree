@@ -41,7 +41,7 @@ class TestNodeInstance < Minitest::Test
     # Force it to be neither file nor dir by setting children to an invalid value
     node.instance_variable_set(:@children, 'invalid')
 
-    refute_predicate(node, :valid?)
+    assert_same(false, node.valid?)
   end
 
   def test_children_not_valid?
