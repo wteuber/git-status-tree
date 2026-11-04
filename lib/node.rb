@@ -202,10 +202,14 @@ class Node
   end
 
   def staged?
-    status.include?('+')
+    staged_status?(status)
   end
 
   private
+
+  def staged_status?(status)
+    status.include?('+')
+  end
 
   def validate_name!(name)
     msg = '"name" must be a String.'
@@ -236,7 +240,7 @@ class Node
   def status_color(status)
     return BashColor::C if self.class.mode == :commit
 
-    status.include?('+') ? BashColor::G : BashColor::R
+    staged_status?(status) ? BashColor::G : BashColor::R
   end
 
   def name_valid?

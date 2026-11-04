@@ -48,8 +48,9 @@ modes.
 Notes:
 - `-u/--untracked-files` is meaningless for commits and is ignored.
 - A root commit (no parent) lists every file as added.
-- A single-commit view of a **merge** commit may be empty; pass the two
-  parents explicitly to see the difference.
+- A single-commit view of a **merge** commit shows its changes vs. its first
+  parent.
+- In a range, an omitted side defaults to `HEAD` (`<c1>..` means `<c1>..HEAD`).
 - The symmetric-difference form `<c1>...<c2>` is not supported (use `..`).
 
 ## Options

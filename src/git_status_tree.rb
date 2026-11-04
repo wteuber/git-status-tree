@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'open3'
 require File.join File.dirname(__FILE__), '../lib/node'
 require File.join File.dirname(__FILE__), '../lib/node_collapsing'
 require File.join File.dirname(__FILE__), '../lib/nodes_collection'
@@ -53,7 +54,21 @@ class GitStatusTree
     # git and is slower/noisier), -r recurses into subtrees, --no-commit-id
     # suppresses the leading SHA line, --root lists every file as added for a
     # root commit (no parent), -z gives unambiguous paths.
-    `git diff-tree --no-commit-id --name-status -M -r --root -z #{refs.join(' ')}`
+    # --diff-merges=first-parent diffs a single merge commit against its first
+    # parent (diff-tree skips merges by default, and plain -m diffs against
+    # every parent); it is a no-op for a two-commit diff.
+    run_git!('diff-tree', '--no-commit-id', '--name-status', '-M', '-r', '--root',
+             '--diff-merges=first-parent', '-z', *refs)
+  end
+
+  # Run git with an argv array (no shell, so revisions are never word-split,
+  # globbed or interpreted) and raise RevisionError with git's own stderr on
+  # failure.
+  def run_git!(*args)
+    stdout, stderr, status = Open3.capture3('git', *args)
+    raise RevisionError, stderr.strip unless status.success?
+
+    stdout
   end
 
   # Translate diff-tree -z output into the porcelain entry strings the node
@@ -89,24 +104,36 @@ class GitStatusTree
   end
 
   # Normalize positional args into resolved SHAs, expanding a single "A..B"
-  # token into two endpoints. "A...B" is rejected: diff-tree does not honor
-  # symmetric-difference semantics and would silently return nothing.
+  # token into two endpoints; an omitted side defaults to HEAD, as in git.
+  # "A...B" is rejected: diff-tree does not honor symmetric-difference
+  # semantics and would silently return nothing.
   def validate_revs!(commits)
     if commits.length == 1 && commits[0].include?('..')
       if commits[0].include?('...')
         raise RevisionError, "fatal: '#{commits[0]}': '...' range is not supported; use 'A..B'"
       end
 
-      commits = commits[0].split('..', 2)
+      commits = commits[0].split('..', 2).map { |rev| rev.empty? ? 'HEAD' : rev }
     end
     commits.map { |rev| validate_rev!(rev) }
   end
 
+  # Resolve first, then peel to a commit in a second step: appending ^{commit}
+  # to the user's text would break revisions like ":/message", where git
+  # treats everything after ":/" as the search pattern.
   def validate_rev!(rev)
-    sha = `git rev-parse --verify --quiet #{rev}^{commit} 2>/dev/null`.strip
-    raise RevisionError, "fatal: bad revision '#{rev}'" if sha.empty?
+    object = rev_parse(rev, rev)
+    rev_parse("#{object}^{commit}", rev)
+  end
 
-    sha
+  def rev_parse(spec, rev)
+    stdout, stderr, status = Open3.capture3('git', 'rev-parse', '--verify', '--quiet', '--end-of-options', spec)
+    sha = stdout.strip
+    return sha if status.success? && !sha.empty?
+
+    # --quiet silences "bad revision"; any stderr left is a real git error
+    # (e.g. not a git repository), so surface it instead.
+    raise RevisionError, stderr.strip.empty? ? "fatal: bad revision '#{rev}'" : stderr.strip
   end
 
   # Parse NUL-terminated `git status --porcelain -z` output into porcelain
