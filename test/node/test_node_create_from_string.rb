@@ -140,6 +140,30 @@ class TestNodeCreateFromString < Minitest::Test
     assert_equal 'C', copy_node.status
   end
 
+  def test_create_from_string__file_copied_staged
+    node = Node.create_from_string('C  a.rb -> b.rb')
+    assert_equal 'a.rb -> b.rb', node.name
+    assert_equal 'C+', node.status
+  end
+
+  # A rename/copy that is also modified in the worktree displays the Y status
+  # ("M") but must still be parsed as "<orig> -> <dest>", not as one path.
+  def test_create_from_string__file_renamed_and_modified_cross_directory
+    node = Node.create_from_string('RM a/old.rb -> b/new.rb')
+    assert_equal [{ 'a' => ['old.rb -> b/new.rb'] }], node.children.to_primitive
+    assert_equal 'M', node.children.nodes.first.children.nodes.first.status
+  end
+
+  def test_create_from_string__file_copied_and_modified_cross_directory
+    node = Node.create_from_string('CM src/a.rb -> lib/b.rb')
+    assert_equal [{ 'src' => ['a.rb -> lib/b.rb'] }], node.children.to_primitive
+  end
+
+  def test_rename_or_copy_checks_both_columns
+    ['R ', 'RM', ' R', 'C ', 'CM', ' C'].each { |xy| assert Node.rename_or_copy?(xy), xy.inspect }
+    ['M ', ' M', 'A ', '??', 'UU', ' D'].each { |xy| refute Node.rename_or_copy?(xy), xy.inspect }
+  end
+
   private
 
   def setup_node_tracking_for_empty_filename

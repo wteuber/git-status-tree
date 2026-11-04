@@ -43,12 +43,20 @@ class Node
     ->(node) { node.is_a?(Node) }
   end
 
+  # True when a porcelain XY status marks a rename or copy, in either column
+  # ("R ", "RM", " R", "C ", "CM", ...). Such entries carry "<orig> -> <dest>".
+  # Checks the raw columns, not the displayed status, which shows only Y
+  # when Y is set (e.g. "RM" displays as "M").
+  def self.rename_or_copy?(xy_status)
+    xy_status.include?('R') || xy_status.include?('C')
+  end
+
   def self.node_from_gs(gs_porcelain)
     status = status(gs_porcelain)
 
     # Renames and copies carry "<orig> -> <dest>" and are placed under the
     # original path; everything else is a single path.
-    if status.include?('R') || status.include?('C')
+    if rename_or_copy?(gs_porcelain[0, 2])
       node_from_renamed_file(gs_porcelain, status)
     else
       node_from_regular_file(gs_porcelain, status)

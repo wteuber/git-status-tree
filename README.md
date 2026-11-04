@@ -173,8 +173,9 @@ ___
       the standard library's `coverage` extension, so `ruby test/coverage.rb`
       needs no gems or Bundler and runs on every supported Ruby (2.6+). Tests
       require 100% library coverage.
-    * Tests point `HOME` at a temporary directory, so they never read or change
-      your global git config.
+    * Tests point git's global config at a temporary file (`GIT_CONFIG_GLOBAL`,
+      so running the suite needs git 2.32+); they never read or change your
+      global git config.
 4. Run RuboCop separately (optional)
     * `bundle exec rubocop`
     * To auto-correct offenses: `bundle exec rubocop -a`

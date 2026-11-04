@@ -153,7 +153,7 @@ class GitStatusTree
       index += 1
       next if entry.nil? || entry.empty?
 
-      if rename_or_copy?(entry)
+      if Node.rename_or_copy?(entry[0, 2])
         orig = tokens[index]
         index += 1
         files << "#{entry[0, 3]}#{orig} -> #{entry[3..]}"
@@ -162,11 +162,6 @@ class GitStatusTree
       end
     end
     files
-  end
-
-  def rename_or_copy?(entry)
-    status = entry[0, 2]
-    status.include?('R') || status.include?('C')
   end
 
   def indent(options)

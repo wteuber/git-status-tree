@@ -8,11 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
-- Copy entries (`C`) now render like renames (`old -> new (C)`, placed under the original path) instead of as a broken path containing ` -> `.
+- Copy entries (`C`), and renames or copies that are also modified in the worktree (`RM`, `CM`), now render like renames (`old -> new`, placed under the original path) instead of as a broken path or a fake directory named after the arrow.
 - `NodesCollection.new_from_nodes_array` raises `NodesCollectionTypeError` for non-Node input instead of a `NameError`.
 - Reinstalling or upgrading the gem no longer resets `status-tree.indent` and `status-tree.collapse` to their defaults; the install script only sets them when they are unset.
 - `rake test:node` and `rake test:nodes_collection` work on their own (every test file now loads the test helper).
-- The test suite no longer reads, writes or unsets the developer's global `status-tree.*` git config (it runs with a temporary `HOME`).
+- The test suite no longer reads, writes or unsets the developer's global `status-tree.*` git config (it points `GIT_CONFIG_GLOBAL` at a temporary file).
 
 ### Changed
 - Gemspec license identifier `GPL-2.0` updated to the SPDX identifier `GPL-2.0-only`; summary and description mention the commit views.
